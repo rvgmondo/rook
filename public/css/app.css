@@ -1,0 +1,65 @@
+/* App-specific components layered on top of the ported design system.
+   Everything here uses the same tokens as rook.css. */
+
+/* --- Bottle art in cards / product page --- */
+.bottle { width: 100%; height: auto; max-width: 150px; margin-inline: auto; }
+.pdp__vis .bottle { max-width: 220px; }
+
+/* --- Waitlist signup form --- */
+.signup { margin-top: var(--s5); max-width: 460px; }
+.signup__row { display: flex; gap: var(--s3); }
+.signup__row .input { flex: 1 1 auto; min-width: 0; }
+.signup__row .btn { flex: 0 0 auto; white-space: nowrap; }
+.signup__msg { margin-top: var(--s3); }
+.signup--light { margin-inline: 0; }
+@media (max-width: 520px) {
+  .signup__row { flex-direction: column; align-items: stretch; }
+  .signup__row .btn { width: 100%; }
+}
+
+/* --- Product page --- */
+.pdp { display: grid; gap: var(--s7); align-items: start; }
+@media (min-width: 860px) { .pdp { grid-template-columns: 5fr 6fr; gap: var(--s9); } }
+.pdp__vis {
+  position: relative; background: var(--paper-2); border: 1px solid var(--line);
+  display: grid; place-items: center; padding: var(--s8) var(--s6); border-radius: 2px;
+}
+.pdp__vis .card__badge { position: absolute; top: var(--s4); left: var(--s4); }
+.pdp__name { font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .02em; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1; margin: var(--s3) 0; }
+.pdp__notes { color: var(--copper-ink); font-size: var(--t-small); letter-spacing: .04em; }
+.pdp__short { color: var(--ink-2); margin-top: var(--s4); max-width: 46ch; line-height: 1.7; }
+
+.pdp__meters { margin-top: var(--s6); display: grid; gap: var(--s3); max-width: 360px; }
+.meter { display: grid; grid-template-columns: 6.5rem 1fr; align-items: center; gap: var(--s4); }
+.meter__label { font-family: var(--display); font-size: var(--t-micro); text-transform: uppercase; letter-spacing: var(--track); color: var(--ink-2); }
+.meter__bar { display: flex; gap: 5px; }
+.meter__seg { flex: 1; height: 6px; border-radius: 1px; background: var(--line-2); }
+.meter__seg.is-on { background: var(--copper); }
+
+.pdp__spec { margin-top: var(--s6); border-top: 1px solid var(--line); }
+.spec { display: flex; justify-content: space-between; gap: var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--line); font-size: var(--t-small); }
+.spec__k { color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; font-size: var(--t-micro); }
+.spec__v { color: var(--ink); text-align: right; }
+
+.pdp__notify { margin-top: var(--s6); padding: var(--s6); background: var(--dark); color: var(--ink); border-radius: 2px; }
+.pdp__notify .pdp__soon { color: var(--paper); font-size: var(--t-small); line-height: 1.6; }
+.pdp__notify .signup { margin-top: var(--s4); }
+.pdp__ing { margin-top: var(--s5); color: var(--ink-3); }
+
+/* --- Contact form --- */
+.cform { margin-top: var(--s6); max-width: 560px; }
+.cform .field { margin-bottom: var(--s4); }
+.cform .textarea { min-height: 150px; }
+.cform__msg { margin-top: var(--s4); }
+
+/* --- Hero (Option 2): dark under the headline, clearing to the lit wall --- */
+.hero--shot .hero__img { object-position: 68% 42%; filter: brightness(1.2) contrast(1.05) saturate(1.08); }
+.hero--shot .hero__bg { opacity: .06; }
+.hero--shot .hero__veil {
+  background:
+    linear-gradient(90deg, rgba(8,8,8,.9) 0%, rgba(8,8,8,.5) 40%, rgba(8,8,8,.12) 70%, rgba(8,8,8,0) 100%),
+    linear-gradient(180deg, rgba(8,8,8,0) 60%, rgba(8,8,8,.4) 100%);
+}
+.hero--shot .hero__title, .hero--shot .hero__lede { text-shadow: 0 1px 30px rgba(8,8,8,.55), 0 1px 3px rgba(8,8,8,.4); }
+/* The generic hero scrim must not sit over the photograph. */
+.hero--shot .hero__bg::after { display: none; }
