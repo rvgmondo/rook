@@ -1,0 +1,10 @@
+---
+deployment:
+  tasks:
+    # The repo is cloned straight into the Node.js app folder, so there is
+    # nothing to copy on deploy — we just restart the app so Passenger loads
+    # the new code. (If package.json changed, run "Run NPM Install" in
+    # Setup Node.js App before deploying.)
+    - export DEPLOYPATH=/home/rookvapesco/rook-app
+    - /bin/mkdir -p "$DEPLOYPATH/tmp"
+    - /bin/touch "$DEPLOYPATH/tmp/restart.txt"
