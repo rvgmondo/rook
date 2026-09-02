@@ -133,7 +133,9 @@ ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ''}
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ROOK">
-<meta property="og:image" content="https://rookvapes.co.za/img/hero.jpg">
+<meta property="og:image" content="https://rookvapes.co.za/img/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 ${jsonld.join('\n')}
 <link rel="icon" href="/img/logo-fav.png">

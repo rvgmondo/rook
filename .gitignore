@@ -2,3 +2,7 @@ node_modules/
 data/
 .env
 *.log
+
+# build workspace: keep the generator, not the heavy source assets
+.build/*.ttf
+.build/*.png
