@@ -69,27 +69,30 @@
     });
   })();
 
-  // Async waitlist signup: no page reload, inline confirmation.
-  $$('[data-signup]').forEach(function (form) {
-    var msg = form.querySelector('[data-signup-msg]');
-    on(form, 'submit', function (e) {
-      if (!msg) return; // no message slot -> let it post normally
-      e.preventDefault();
-      var btn = form.querySelector('button[type="submit"]');
-      var label = btn ? btn.textContent : '';
-      if (btn) { btn.disabled = true; btn.textContent = 'Sending'; }
-      fetch('/signup', {
-        method: 'POST', credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'fetch' },
-        body: new URLSearchParams(new FormData(form)).toString(),
-      }).then(function (r) { return r.json(); }).then(function (res) {
-        var ondark = msg.classList.contains('notice--ondark');
-        msg.textContent = res.message || 'Something went wrong. Try again.';
-        msg.className = 'notice signup__msg' + (ondark ? ' notice--ondark' : '') + (res.ok ? '' : ' notice--error');
-        msg.hidden = false;
-        if (res.ok) form.reset();
-        if (btn) { btn.disabled = false; btn.textContent = label; }
-      }).catch(function () { form.submit(); });
+  // Async forms (waitlist signup + contact): no reload, inline confirmation.
+  // Posts to the form's own action; toggles only the error state so the
+  // element keeps its context classes (notice--ondark, spacing, etc).
+  [['[data-signup]', '[data-signup-msg]'], ['[data-contact]', '[data-contact-msg]']].forEach(function (pair) {
+    $$(pair[0]).forEach(function (form) {
+      var msg = form.querySelector(pair[1]);
+      on(form, 'submit', function (e) {
+        if (!msg) return; // no message slot -> let it post normally
+        e.preventDefault();
+        var btn = form.querySelector('button[type="submit"]');
+        var label = btn ? btn.textContent : '';
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending'; }
+        fetch(form.getAttribute('action'), {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'fetch' },
+          body: new URLSearchParams(new FormData(form)).toString(),
+        }).then(function (r) { return r.json(); }).then(function (res) {
+          msg.textContent = res.message || 'Something went wrong. Try again.';
+          msg.classList.toggle('notice--error', !res.ok);
+          msg.hidden = false;
+          if (res.ok) form.reset();
+          if (btn) { btn.disabled = false; btn.textContent = label; }
+        }).catch(function () { form.submit(); });
+      });
     });
   });
 

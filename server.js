@@ -19,7 +19,7 @@ import { contentPage, flavoursPage, contactPage } from './src/pages/page.js';
 import { shopPage } from './src/pages/shop.js';
 import { productPage } from './src/pages/product.js';
 import { journalIndex, journalArticle } from './src/pages/journal.js';
-import { notFoundPage } from './src/render.js';
+import { notFoundPage, errorPage } from './src/render.js';
 import { sitemapXml, robotsTxt } from './src/lib/seo.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -85,6 +85,12 @@ app.get('/robots.txt', async (req, reply) =>
 
 // Anything unmatched -> styled 404.
 app.setNotFoundHandler((req, reply) => send404(req, reply));
+
+// Unhandled errors -> styled 500 (logged server-side).
+app.setErrorHandler((err, req, reply) => {
+  req.log.error(err);
+  reply.code(500).type('text/html; charset=utf-8').send(errorPage());
+});
 
 // --- Contact message ---------------------------------------------------------
 app.post('/contact', async (req, reply) => {

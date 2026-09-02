@@ -132,6 +132,8 @@ ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 ${jsonld.join('\n')}
 <link rel="icon" href="/img/logo-fav.png">
+<link rel="apple-touch-icon" href="/img/logo-fav.png">
+<meta name="theme-color" content="#0A0A0A">
 <link rel="preload" href="/fonts/raleway.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face{font-family:"Raleway";font-style:normal;font-weight:300 800;font-display:swap;src:url(/fonts/raleway.woff2) format("woff2-variations")}
@@ -155,6 +157,19 @@ ${gated ? ageGate(gateError) : ''}
 <script src="/js/rook.js" defer></script>
 </body>
 </html>`;
+}
+
+// A styled 500.
+export function errorPage() {
+  const body = `<header class="phead"><div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">ROOK</a><span>/</span><span aria-current="page">Error</span></nav>
+    <h1 class="phead__title h1">Something went wrong</h1>
+    <p class="phead__lede lede">That is on us, not you. Try again in a moment.</p>
+  </div></header>
+  <section class="bay"><div class="wrap wrap--read"><div class="prose">
+    <p>Head back to <a href="/">the homepage</a>, or if it keeps happening, tell us at <a href="mailto:hello@rookvapes.co.za">hello@rookvapes.co.za</a>.</p>
+  </div></div></section>`;
+  return layout({ title: 'Something went wrong', description: 'An error occurred.', body });
 }
 
 // A styled 404.
