@@ -113,20 +113,24 @@ export function ageGate(error = '') {
 }
 
 // --- Full page shell ---------------------------------------------------------
-export function layout({ title, description, body, home = false, gated = false, gateError = '', canonical = '' } = {}) {
+export function layout({ title, description, body, home = false, gated = false, gateError = '', canonical = '', jsonld = [] } = {}) {
   const fullTitle = title ? `${title} - ROOK` : 'ROOK';
+  const desc = description || site.tagline;
   return `<!doctype html>
 <html lang="en-ZA" class="${gated ? 'is-gated' : ''}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(fullTitle)}</title>
-<meta name="description" content="${esc(description || site.tagline)}">
+<meta name="description" content="${esc(desc)}">
 ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ''}
 <meta property="og:title" content="${esc(fullTitle)}">
-<meta property="og:description" content="${esc(description || site.tagline)}">
+<meta property="og:description" content="${esc(desc)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ROOK">
+<meta property="og:image" content="https://rookvapes.co.za/img/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+${jsonld.join('\n')}
 <link rel="icon" href="/img/logo-fav.png">
 <link rel="preload" href="/fonts/raleway.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -151,6 +155,19 @@ ${gated ? ageGate(gateError) : ''}
 <script src="/js/rook.js" defer></script>
 </body>
 </html>`;
+}
+
+// A styled 404.
+export function notFoundPage({ gated = false } = {}) {
+  const body = `<header class="phead"><div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">ROOK</a><span>/</span><span aria-current="page">Not found</span></nav>
+    <h1 class="phead__title h1">Page not found</h1>
+    <p class="phead__lede lede">That page is not here. It may have moved, or never existed.</p>
+  </div></header>
+  <section class="bay"><div class="wrap wrap--read"><div class="prose">
+    <p>Try the <a href="/shop/">range</a>, the <a href="/flavours/">help me choose</a> page, or <a href="/">the homepage</a>. If something on the site sent you here, tell us at <a href="mailto:hello@rookvapes.co.za">hello@rookvapes.co.za</a>.</p>
+  </div></div></section>`;
+  return layout({ title: 'Page not found', description: 'Page not found.', body, gated });
 }
 
 export { esc };

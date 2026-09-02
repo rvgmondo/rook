@@ -63,3 +63,16 @@
 .hero--shot .hero__title, .hero--shot .hero__lede { text-shadow: 0 1px 30px rgba(8,8,8,.55), 0 1px 3px rgba(8,8,8,.4); }
 /* The generic hero scrim must not sit over the photograph. */
 .hero--shot .hero__bg::after { display: none; }
+
+/* --- Journal --- */
+.jlist { display: grid; gap: var(--s5); }
+.jcard { border: 1px solid var(--line); border-radius: 2px; background: var(--paper-2); transition: border-color .25s var(--ease), transform .25s var(--ease); }
+.jcard:hover { border-color: var(--copper); transform: translateY(-2px); }
+.jcard__link { display: block; padding: var(--s6); }
+.jcard__title { font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: var(--t-h2); color: var(--ink); }
+.jcard__excerpt { color: var(--ink-2); margin-top: var(--s3); line-height: 1.6; }
+.jcard__more { display: inline-flex; align-items: center; gap: var(--s2); margin-top: var(--s4); font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); color: var(--copper-ink); }
+
+/* --- Flash banner (no-JS signup confirmation) --- */
+.flash { background: var(--dark); color: var(--paper); font-size: var(--t-small); text-align: center; padding: var(--s3) 0; }
+.flash--error { background: var(--sale); }

@@ -18,6 +18,9 @@ import { homePage } from './src/pages/home.js';
 import { contentPage, flavoursPage, contactPage } from './src/pages/page.js';
 import { shopPage } from './src/pages/shop.js';
 import { productPage } from './src/pages/product.js';
+import { journalIndex, journalArticle } from './src/pages/journal.js';
+import { notFoundPage } from './src/render.js';
+import { sitemapXml, robotsTxt } from './src/lib/seo.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = Fastify({ trustProxy: true });
@@ -34,12 +37,24 @@ await app.register(fastifyStatic, {
 const html = (reply, markup) => reply.type('text/html; charset=utf-8').send(markup);
 const gated = (req) => !verify(req.cookies[cookieName]);
 
+// Security headers on every response.
+app.addHook('onSend', async (req, reply, payload) => {
+  reply.headers({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'SAMEORIGIN',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
+  });
+  return payload;
+});
+
 // --- Home --------------------------------------------------------------------
-app.get('/', async (req, reply) => html(reply, homePage({ gated: gated(req) })));
+app.get('/', async (req, reply) =>
+  html(reply, homePage({ gated: gated(req), signup: req.query.signup })));
 
 // --- Content + listing pages -------------------------------------------------
-const send404 = (reply) =>
-  reply.code(404).type('text/html; charset=utf-8').send(contentPage('__404__') || 'Not found');
+const send404 = (req, reply) =>
+  reply.code(404).type('text/html; charset=utf-8').send(notFoundPage({ gated: gated(req) }));
 
 app.get('/shop/', async (req, reply) => html(reply, shopPage({ gated: gated(req) })));
 app.get('/flavours/', async (req, reply) => html(reply, flavoursPage({ gated: gated(req) })));
@@ -52,15 +67,24 @@ for (const key of ['about', 'help', 'wholesale', 'age-policy', 'terms', 'privacy
 
 app.get('/product/:slug/', async (req, reply) => {
   const page = productPage(req.params.slug, { gated: gated(req) });
-  return page ? html(reply, page) : send404(reply);
+  return page ? html(reply, page) : send404(req, reply);
 });
 
-// Journal: a light placeholder for now.
-app.get('/journal/', async (req, reply) => {
-  const body = `<header class="phead"><div class="wrap"><nav class="crumbs"><a href="/">ROOK</a><span>/</span><span>Journal</span></nav><h1 class="phead__title h1">Journal</h1><p class="phead__lede lede">Notes on flavour, hardware and the launch. Coming soon.</p></div></header>`;
-  const { layout } = await import('./src/render.js');
-  return html(reply, layout({ title: 'Journal', description: 'Notes from ROOK.', body, gated: gated(req) }));
+// Journal
+app.get('/journal/', async (req, reply) => html(reply, journalIndex({ gated: gated(req) })));
+app.get('/journal/:slug/', async (req, reply) => {
+  const page = journalArticle(req.params.slug, { gated: gated(req) });
+  return page ? html(reply, page) : send404(req, reply);
 });
+
+// --- SEO files ---------------------------------------------------------------
+app.get('/sitemap.xml', async (req, reply) =>
+  reply.type('application/xml; charset=utf-8').send(sitemapXml()));
+app.get('/robots.txt', async (req, reply) =>
+  reply.type('text/plain; charset=utf-8').send(robotsTxt()));
+
+// Anything unmatched -> styled 404.
+app.setNotFoundHandler((req, reply) => send404(req, reply));
 
 // --- Contact message ---------------------------------------------------------
 app.post('/contact', async (req, reply) => {

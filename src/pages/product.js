@@ -2,6 +2,7 @@ import { layout, esc, bottle } from '../render.js';
 import { icon } from '../lib/icons.js';
 import { meter, signupForm } from '../lib/components.js';
 import { bySlug, price } from '../data/products.js';
+import { productLd, breadcrumbLd } from '../lib/seo.js';
 
 export function productPage(slug, { gated } = {}) {
   const p = bySlug[slug];
@@ -40,5 +41,12 @@ export function productPage(slug, { gated } = {}) {
   </div>
 </div></section>`;
 
-  return layout({ title: p.name, description: p.short, body, gated, canonical: `https://rookvapes.co.za/product/${p.slug}/` });
+  return layout({
+    title: p.name, description: p.short, body, gated,
+    canonical: `https://rookvapes.co.za/product/${p.slug}/`,
+    jsonld: [
+      productLd(p),
+      breadcrumbLd([{ name: 'ROOK', url: '/' }, { name: 'Shop', url: '/shop/' }, { name: p.name, url: `/product/${p.slug}/` }]),
+    ],
+  });
 }

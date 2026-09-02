@@ -2,6 +2,7 @@ import { layout, smoke, bottle, esc } from '../render.js';
 import { icon } from '../lib/icons.js';
 import { home, prelaunch, site } from '../data/copy.js';
 import { products, price } from '../data/products.js';
+import { organizationLd, websiteLd, faqLd } from '../lib/seo.js';
 
 // Pre-launch: the hero and second promo say "coming soon"; the rest holds.
 const c = { ...home, ...prelaunch };
@@ -34,10 +35,13 @@ function signupForm(source, cls = '') {
   </form>`;
 }
 
-export function homePage({ gated, gateError = '' } = {}) {
+export function homePage({ gated, gateError = '', signup = '' } = {}) {
   const seq = products;
+  const banner = signup === 'ok'
+    ? `<div class="flash"><div class="wrap">You are on the list. Look out for a note when the next batch lands.</div></div>`
+    : (signup === 'invalid' ? `<div class="flash flash--error"><div class="wrap">That email did not look right. Try again below.</div></div>` : '');
 
-  const body = `
+  const body = `${banner}
 <section class="hero hero--shot">
   <div class="hero__shot"><img class="hero__img" src="/img/hero.jpg" alt="" fetchpriority="high" decoding="async"><span class="hero__veil" aria-hidden="true"></span></div>
   <div class="hero__bg">${smoke({ seed: 13, tint: '#C9976A', opacity: 1 })}</div>
@@ -113,5 +117,9 @@ export function homePage({ gated, gateError = '' } = {}) {
   </div>
 </section>`;
 
-  return layout({ title: '', description: prelaunch.lede, body, home: true, gated, gateError, canonical: 'https://rookvapes.co.za/' });
+  return layout({
+    title: '', description: prelaunch.lede, body, home: true, gated, gateError,
+    canonical: 'https://rookvapes.co.za/',
+    jsonld: [organizationLd(), websiteLd(), faqLd(c.faq)],
+  });
 }
