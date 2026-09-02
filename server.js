@@ -35,7 +35,11 @@ await app.register(fastifyStatic, {
 });
 
 const html = (reply, markup) => reply.type('text/html; charset=utf-8').send(markup);
-const gated = (req) => !verify(req.cookies[cookieName]);
+const DEV = process.env.NODE_ENV !== 'production';
+const gated = (req) => {
+  if (DEV && req.query.nogate === '1') return false; // dev-only preview bypass
+  return !verify(req.cookies[cookieName]);
+};
 
 // Security headers on every response.
 app.addHook('onSend', async (req, reply, payload) => {
