@@ -51,7 +51,7 @@ export function contactPage({ gated, status } = {}) {
     <div class="field"><label class="field__label" for="c-message">Message</label><textarea class="textarea" id="c-message" name="message" required></textarea></div>
     <input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
     <button class="btn btn--copper" type="submit">Send ${icon('arrow', 14)}</button>
-    <p class="notice notice--error cform__msg" data-contact-msg hidden></p>
+    <p class="notice notice--error cform__msg" data-contact-msg aria-live="polite" hidden></p>
   </form>`;
   const body = pageHeader(p.title, p.excerpt) + `<article class="bay"><div class="wrap wrap--read"><div class="prose">${p.body}</div>${form}<div class="prose" style="margin-top:var(--s7)">${p.after}</div></div></article>`;
   return layout({ title: p.title, description: p.excerpt, body, gated, canonical: 'https://rookvapes.co.za/contact/' });

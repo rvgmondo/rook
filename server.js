@@ -160,6 +160,13 @@ app.post('/signup', { config: { rateLimit: { max: 8, timeWindow: '1 minute' } } 
 // --- Health + placeholder routes for pages still being built -----------------
 app.get('/health', async () => ({ ok: true }));
 
+// Loud warning if the age-gate signing key is missing/weak in production —
+// a weak key means the 18+ cookie can be forged.
+if (process.env.NODE_ENV === 'production' &&
+    (!process.env.ROOK_SECRET || process.env.ROOK_SECRET.length < 16)) {
+  app.log.warn('ROOK_SECRET is missing or too short. Set a long random value so the age-gate cookie is securely signed.');
+}
+
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 app.listen({ port: PORT, host: HOST })

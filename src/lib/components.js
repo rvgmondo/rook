@@ -29,7 +29,7 @@ export function signupForm(source, cls = '') {
       <input class="input" id="${esc(source)}-email" type="email" name="email" placeholder="Your email address" autocomplete="email" required>
       <button class="btn btn--copper btn--sm" type="submit">Join the list</button>
     </div>
-    <p class="notice notice--ondark signup__msg" data-signup-msg hidden></p>
+    <p class="notice notice--ondark signup__msg" data-signup-msg aria-live="polite" hidden></p>
   </form>`;
 }
 
