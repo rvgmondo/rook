@@ -25,7 +25,9 @@ import { notFoundPage, errorPage } from './src/render.js';
 import { sitemapXml, robotsTxt } from './src/lib/seo.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const app = Fastify({ trustProxy: true });
+// Log warnings and errors (not every request), so startup warnings and 500s
+// reach the host's logs without flooding them.
+const app = Fastify({ trustProxy: true, logger: { level: 'warn' } });
 
 await app.register(fastifyCompress, { global: true, encodings: ['br', 'gzip'] });
 await app.register(fastifyRateLimit, {
