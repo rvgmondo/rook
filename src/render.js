@@ -4,6 +4,11 @@
 import { mark, icon } from './lib/icons.js';
 import { site } from './data/copy.js';
 
+// Asset version. Changes on each deploy (server restart), so a "Update from
+// Remote" + restart busts the browser cache for CSS/JS. Override with ASSET_V
+// to pin it (e.g. to a git sha) if you prefer.
+const ASSET_V = process.env.ASSET_V || String(Date.now());
+
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -141,9 +146,9 @@ ${jsonld.join('\n')}
 @font-face{font-family:"Barlow";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/barlow-400.woff2) format("woff2")}
 html{background:#F5F3EE}
 </style>
-<link rel="stylesheet" href="/css/rook.css">
-<link rel="stylesheet" href="/css/shop.css">
-<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/rook.css?v=${ASSET_V}">
+<link rel="stylesheet" href="/css/shop.css?v=${ASSET_V}">
+<link rel="stylesheet" href="/css/app.css?v=${ASSET_V}">
 <script>document.documentElement.className+=" rk-js";</script>
 </head>
 <body class="${gated ? 'is-gated is-locked' : ''}">
@@ -154,7 +159,7 @@ ${header({ home })}
 ${footer()}
 </div>
 ${gated ? ageGate(gateError) : ''}
-<script src="/js/rook.js" defer></script>
+<script src="/js/rook.js?v=${ASSET_V}" defer></script>
 </body>
 </html>`;
 }

@@ -8,6 +8,8 @@ import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyCookie from '@fastify/cookie';
 import fastifyFormbody from '@fastify/formbody';
+import fastifyCompress from '@fastify/compress';
+import fastifyRateLimit from '@fastify/rate-limit';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +27,11 @@ import { sitemapXml, robotsTxt } from './src/lib/seo.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = Fastify({ trustProxy: true });
 
+await app.register(fastifyCompress, { global: true, encodings: ['br', 'gzip'] });
+await app.register(fastifyRateLimit, {
+  global: false, // opt in per route; page views are not limited
+  max: 12, timeWindow: '1 minute',
+});
 await app.register(fastifyCookie);
 await app.register(fastifyFormbody);
 await app.register(fastifyStatic, {
@@ -90,14 +97,22 @@ app.get('/robots.txt', async (req, reply) =>
 // Anything unmatched -> styled 404.
 app.setNotFoundHandler((req, reply) => send404(req, reply));
 
-// Unhandled errors -> styled 500 (logged server-side).
+// Error handler: respect the error's own status code.
 app.setErrorHandler((err, req, reply) => {
-  req.log.error(err);
-  reply.code(500).type('text/html; charset=utf-8').send(errorPage());
+  const code = err.statusCode && err.statusCode >= 400 ? err.statusCode : 500;
+  if (code === 429) {
+    return reply.code(429).type('text/plain; charset=utf-8')
+      .send('Too many requests. Please wait a minute and try again.');
+  }
+  if (code >= 500) {
+    req.log.error(err);
+    return reply.code(500).type('text/html; charset=utf-8').send(errorPage());
+  }
+  return reply.code(code).type('text/plain; charset=utf-8').send(err.message || 'Bad request');
 });
 
 // --- Contact message ---------------------------------------------------------
-app.post('/contact', async (req, reply) => {
+app.post('/contact', { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } }, async (req, reply) => {
   const wantsJson = req.headers['x-requested-with'] === 'fetch';
   const res = addMessage(req.body || {});
   const message = res.ok
@@ -108,7 +123,7 @@ app.post('/contact', async (req, reply) => {
 });
 
 // --- Age gate ----------------------------------------------------------------
-app.post('/gate', async (req, reply) => {
+app.post('/gate', { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, async (req, reply) => {
   const { d, m, y } = req.body || {};
   const check = isAdult(d, m, y);
   if (check.ok) {
@@ -123,11 +138,13 @@ app.post('/gate', async (req, reply) => {
 });
 
 // --- Waitlist signup ---------------------------------------------------------
-app.post('/signup', async (req, reply) => {
-  const { email, source } = req.body || {};
+app.post('/signup', { config: { rateLimit: { max: 8, timeWindow: '1 minute' } } }, async (req, reply) => {
+  const { email, source, company } = req.body || {};
   const wantsJson = req.headers['x-requested-with'] === 'fetch';
-  const ok = validEmail(email);
-  if (ok) addSubscriber(email, source || 'site');
+  // Honeypot: bots fill the hidden "company" field. Pretend success, store nothing.
+  const spam = !!company;
+  const ok = spam || validEmail(email);
+  if (ok && !spam) addSubscriber(email, source || 'site');
 
   const message = ok
     ? 'You are on the list. Look out for a note when the next batch lands.'

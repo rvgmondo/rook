@@ -23,6 +23,7 @@ export function card(p) {
 export function signupForm(source, cls = '') {
   return `<form class="signup ${cls}" method="post" action="/signup" data-signup>
     <input type="hidden" name="source" value="${esc(source)}">
+    <input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
     <div class="signup__row">
       <label class="sr" for="${esc(source)}-email">Email address</label>
       <input class="input" id="${esc(source)}-email" type="email" name="email" placeholder="Your email address" autocomplete="email" required>
