@@ -1,4 +1,4 @@
-import { layout, smoke, bottle, esc } from '../render.js';
+import { layout, smoke, bottle, esc, words } from '../render.js';
 import { icon } from '../lib/icons.js';
 import { home, prelaunch, site } from '../data/copy.js';
 import { products, price } from '../data/products.js';
@@ -43,17 +43,18 @@ export function homePage({ gated, gateError = '', signup = '' } = {}) {
     : (signup === 'invalid' ? `<div class="flash flash--error"><div class="wrap">That email did not look right. Try again below.</div></div>` : '');
 
   const body = `${banner}
-<section class="hero hero--shot">
-  <div class="hero__shot"><img class="hero__img" src="/img/hero.jpg" alt="" fetchpriority="high" decoding="async"><span class="hero__veil" aria-hidden="true"></span></div>
-  <div class="hero__bg">${smoke({ seed: 13, tint: '#C9976A', opacity: 1 })}</div>
+<section class="hero hero--smoke">
+  <canvas class="hero__smoke" data-smoke aria-hidden="true"></canvas>
   <div class="hero__rail"><a href="${site.instagram}" rel="noopener nofollow" aria-label="Instagram">${icon('instagram', 15)}</a><a href="${site.tiktok}" rel="noopener nofollow" aria-label="TikTok">${icon('tiktok', 15)}</a></div>
   <div class="wrap hero__in">
-    <span class="tag tag--copper enter" style="--e:1">${esc(c.eyebrow)}</span>
-    <h1 class="hero__title d-hero enter" style="--e:2">${esc(c.headline)}</h1>
-    <p class="hero__lede enter" style="--e:3">${esc(c.lede)}</p>
-    <p class="hero__cta enter" style="--e:4"><a class="btn btn--copper" href="/shop/">${esc(c.cta)} <span class="arrow">${icon('arrow', 14)}</span></a><a class="btn btn--light" href="/flavours/">${esc(c.cta_alt)}</a></p>
+    <span class="hero__eyebrow">${esc(c.eyebrow)}</span>
+    <h1 class="hero__title d-hero" aria-label="${esc(c.headline)}">${words(c.headline)}</h1>
+    <p class="hero__lede">${esc(c.lede)}</p>
+    <p class="hero__cta"><a class="btn btn--copper" href="/shop/">${esc(c.cta)} <span class="arrow">${icon('arrow', 14)}</span></a><a class="btn btn--light" href="/flavours/">${esc(c.cta_alt)}</a></p>
   </div>
+  <p class="hero__cue" aria-hidden="true"><span></span>Scroll</p>
 </section>
+<div class="dawn" aria-hidden="true"></div>
 
 <section class="bay">
   <div class="wrap">

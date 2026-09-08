@@ -96,6 +96,20 @@
     });
   });
 
+  // Opener entrance safety net.
+  //
+  // The headline animates up out of a mask, so it necessarily starts at
+  // opacity 0. If those animations never run the hero would sit blank
+  // forever, and they genuinely can fail to start: a backgrounded tab
+  // throttles its animation timeline, and a window that is not painting does
+  // not advance it at all. Three seconds is past the longest delay in the
+  // sequence, so this only ever fires when something went wrong.
+  (function () {
+    var hero = $('.hero--smoke');
+    if (!hero) return;
+    setTimeout(function () { hero.classList.add('is-settled'); }, 3000);
+  })();
+
   // Scroll reveals + safety net (nothing stays hidden if the observer never fires).
   (function () {
     var items = $$('.rv');

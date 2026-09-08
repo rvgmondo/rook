@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rook-node",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set PORT=3010 && node server.js"],
+      "port": 3010
+    }
+  ]
+}

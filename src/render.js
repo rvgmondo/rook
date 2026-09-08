@@ -12,6 +12,16 @@ const ASSET_V = process.env.ASSET_V || String(Date.now());
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+// Splits a headline into per-word masks for the opener's reveal. Done here
+// rather than in the browser so the animation needs no JavaScript, the text
+// ships in the HTML exactly as written for search engines and screen readers,
+// and there is no flash of unstyled or re-laid-out type on load.
+export function words(text) {
+  return String(text).trim().split(/\s+/)
+    .map((w, i) => `<span class="kw"><span style="--i:${i}">${esc(w)}</span></span>`)
+    .join(' ');
+}
+
 // --- Procedural smoke, used behind dark sections -----------------------------
 let smokeSeq = 0;
 export function smoke({ seed = 7, tint = '#C9976A', opacity = 1, cls = '' } = {}) {
@@ -151,6 +161,7 @@ html{background:#F5F3EE}
 <link rel="stylesheet" href="/css/rook.css?v=${ASSET_V}">
 <link rel="stylesheet" href="/css/shop.css?v=${ASSET_V}">
 <link rel="stylesheet" href="/css/app.css?v=${ASSET_V}">
+<link rel="stylesheet" href="/css/stage.css?v=${ASSET_V}">
 <script>document.documentElement.className+=" rk-js";</script>
 </head>
 <body class="${gated ? 'is-gated is-locked' : ''}">
@@ -162,6 +173,7 @@ ${footer()}
 </div>
 ${gated ? ageGate(gateError) : ''}
 <script src="/js/rook.js?v=${ASSET_V}" defer></script>
+${home ? `<script src="/js/smoke.js?v=${ASSET_V}" defer></script>` : ''}
 </body>
 </html>`;
 }
