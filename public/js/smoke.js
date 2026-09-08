@@ -16,7 +16,10 @@
 (function () {
   'use strict';
 
-  var canvas = document.querySelector('[data-smoke]');
+  /* When the age gate is up it covers the page, so its canvas is the only one
+     worth drawing. Never start two contexts: that would double the GPU cost
+     to render something nobody can see. */
+  var canvas = document.querySelector('.gate [data-smoke]') || document.querySelector('[data-smoke]');
   if (!canvas) return;
 
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;

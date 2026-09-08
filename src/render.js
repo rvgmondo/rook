@@ -108,10 +108,11 @@ export function ageGate(error = '') {
       : (error === 'incomplete' ? 'Enter your full date of birth.' : ''));
   const field = (label, name, id, len, ph) =>
     `<label class="field"><span class="field__label">${label}</span><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="${len}" name="${name}" id="${id}" placeholder="${ph}" autocomplete="off"></label>`;
-  return `<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  return `<div class="gate gate--dark" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <canvas class="gate__smoke" data-smoke aria-hidden="true"></canvas>
     <div class="gate__in">
       <span class="logo gate__logo">${mark('logo__mark')}<span class="logo__type"><span class="logo__word">ROOK</span> <span class="logo__tag">made in South Africa</span></span></span>
-      <h1 class="gate__title h1" id="gate-title">This site is for adults.</h1>
+      <h1 class="gate__title" id="gate-title" aria-label="This site is for adults.">${words('This site is for adults.')}</h1>
       <p class="gate__copy">ROOK sells nicotine products. Enter your date of birth to continue. We keep the answer, not the date.</p>
       <form class="gate__form" method="post" action="/gate">
         <div class="gate__dob">
@@ -173,7 +174,7 @@ ${footer()}
 </div>
 ${gated ? ageGate(gateError) : ''}
 <script src="/js/rook.js?v=${ASSET_V}" defer></script>
-${home ? `<script src="/js/smoke.js?v=${ASSET_V}" defer></script>` : ''}
+${home || gated ? `<script src="/js/smoke.js?v=${ASSET_V}" defer></script>` : ''}
 </body>
 </html>`;
 }

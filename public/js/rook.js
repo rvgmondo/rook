@@ -105,9 +105,11 @@
   // not advance it at all. Three seconds is past the longest delay in the
   // sequence, so this only ever fires when something went wrong.
   (function () {
-    var hero = $('.hero--smoke');
-    if (!hero) return;
-    setTimeout(function () { hero.classList.add('is-settled'); }, 3000);
+    var stages = $$('.hero--smoke, .gate--dark');
+    if (!stages.length) return;
+    setTimeout(function () {
+      stages.forEach(function (el) { el.classList.add('is-settled'); });
+    }, 3000);
   })();
 
   // Scroll reveals + safety net (nothing stays hidden if the observer never fires).
