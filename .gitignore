@@ -6,3 +6,8 @@ data/
 # build workspace: keep the generator, not the heavy source assets
 .build/*.ttf
 .build/*.png
+
+# Passenger's restart trigger, created by the .cpanel.yml deploy task itself.
+# It must be ignored: cPanel refuses to deploy unless the checked-out branch
+# is clean, so a deploy that left this behind would block the next one.
+tmp/
