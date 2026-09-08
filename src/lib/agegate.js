@@ -3,7 +3,7 @@
 // only asserts "this browser passed the gate"; it stores no personal data.
 //
 // Signing key comes from ROOK_SECRET in the environment. Falls back to a fixed
-// dev key so the site runs locally without setup — set a real one in production.
+// dev key so the site runs locally without setup - set a real one in production.
 
 import crypto from 'node:crypto';
 

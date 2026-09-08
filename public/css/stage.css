@@ -472,3 +472,593 @@
   }
   .gate__smoke { transition: none; }
 }
+
+/* ==========================================================================
+   SITE COMPONENTS
+
+   The vocabulary the interior pages are built from: the numbered range
+   index, flavour plates, spec rows, the ledger and the section rhythm.
+   Merged from the per-page passes and harmonised here, which is why it
+   reads as one system rather than five.
+   ========================================================================== */
+
+/* --- home ------------------------------------------------------------ */
+
+/* ==========================================================================
+   HOMEPAGE ADDITIONS (Agent B)
+
+   Everything the homepage needs that Part 4 does not already hand to
+   stage.css. No new colour values: every one of these resolves to an existing
+   custom property. Append after the Part 4 component block, since a few of
+   these deliberately outrank it.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   THE GUIDE BAND
+   The same band as a flavour, with the flavour taken out. It carries no wash,
+   no facts and no number, so the rail gets two hairlines instead and the side
+   column holds nothing but the cue.
+   -------------------------------------------------------------------------- */
+
+.index--tail { border-top: 0; }
+
+.plate--guide .plate__name { max-width: 18ch; }
+.plate--guide .plate__body {
+  margin-top: var(--s4);
+  max-width: 46ch;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.plate--guide .plate__side { display: flex; align-items: flex-start; }
+
+/* Two hairlines where a numeral would be. A drawn mark rather than a
+   punctuation character, so it cannot violate L11 and it cannot be read out. */
+.ord--rule { display: inline-flex; align-items: center; gap: 5px; }
+.ord--rule::before,
+.ord--rule::after {
+  content: "";
+  display: block;
+  width: 9px; height: 1px;
+  background: var(--line-2);
+}
+
+/* --------------------------------------------------------------------------
+   THE NUMBERED FAQ
+   Same .acc and data-acc hook as before, set as an index.
+
+   Two live bugs are fixed here. rook.css paints .acc__panel display:grid with
+   grid-template-rows:0fr, which (a) outranks the user agent's [hidden] rule so
+   a closed panel is not actually hidden, and (b) collapses the row to zero
+   height with nothing clipping it, so the answer overflows onto the question
+   below. The panels are declared block, [hidden] is honoured explicitly, and
+   the markup now ships them open so the answers survive with JavaScript off.
+   -------------------------------------------------------------------------- */
+
+.acc--index .acc__btn {
+  align-items: baseline;
+  gap: var(--s5);
+  padding-block: var(--s5);
+  font-weight: 600;
+}
+.acc--index .acc__q {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s4);
+  min-width: 0;
+}
+.acc--index .acc__q .ord { flex: 0 0 2.25rem; }
+.acc--index .acc__btn:hover .ord,
+.acc--index .acc__btn:focus-visible .ord { color: var(--copper-ink); }
+
+.acc--index .acc__btn svg {
+  flex: 0 0 auto;
+  color: var(--ink-3);
+  transition: transform .3s var(--ease), color .3s var(--ease);
+}
+.acc--index .acc__btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.acc--index .acc__btn:hover svg { color: var(--copper-ink); }
+
+.acc--index .acc__panel { display: block; }
+.acc--index .acc__panel[hidden] { display: none; }
+/* Answers hang under the question, not under the ordinal. */
+.acc--index .acc__panel p { padding-left: calc(2.25rem + var(--s4)); }
+@media (max-width: 620px) {
+  .acc--index .acc__panel p { padding-left: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   SECTION HEADS ON BLACK
+
+   4.2 and 4.16 between them leave .sect__eyebrow at var(--ink-3) and its .ord
+   at var(--copper-ink) inside a dark band. Both are near enough to 3:1 on
+   #0A0A0A to fail, and Part 9 is explicit that no --ink value and no
+   --copper-ink may sit on a dark ground.
+   -------------------------------------------------------------------------- */
+
+.bay--dark .sect__eyebrow { color: var(--ink-dark-2); }
+.bay--dark .sect__eyebrow .ord { color: var(--copper-2); }
+
+/* --------------------------------------------------------------------------
+   THE RANGE STATEMENT
+
+   .sect__statement is capped at 22ch, which is right for the three or four
+   word statements it was drawn for. The homepage one carries a full sentence
+   and sets as six shouted lines at that measure. Scoped to this one instance,
+   so the component is untouched. Type, weight and case stay exactly as
+   specified.
+   -------------------------------------------------------------------------- */
+
+#range .sect__statement { max-width: 38ch; }
+
+/* --------------------------------------------------------------------------
+   THE FLASH BANNER
+
+   The opener pulls itself up under the sticky header by --header-h, which
+   slides it straight over a flash banner sitting above it in the flow. The
+   banner is the confirmation someone sees after signing up without
+   JavaScript, so it has to stay on top. One line, no layout change.
+   -------------------------------------------------------------------------- */
+
+.flash { position: relative; z-index: 5; }
+
+/* --------------------------------------------------------------------------
+   MOTION
+
+   Nothing new animates on entrance, so there is nothing new to add to the
+   Part 7 reduce block. The disclosure chevron is a state change rather than
+   an entrance; it is pinned anyway.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .acc--index .acc__btn svg { transition: none; }
+}
+
+/* Every answer prints, whatever the script left open. */
+@media print {
+  .acc--index .acc__panel[hidden] { display: block; }
+}
+/* --- shop ------------------------------------------------------------ */
+
+/* ==========================================================================
+   SHOP / THE INDEX - page-level joins only.
+
+   Everything the bands themselves need (.index, .plate and its parts,
+   .phead--index, .sect__eyebrow, .ord, .chip, .stamp, .grid12) is Part 4 of
+   the spec and belongs to Agent A's stage.css. The three rules below are the
+   only things the shop page needs on top of that, and they exist because this
+   is the one page where a .shead sits directly on top of an .index.
+
+   No animation here, so nothing needs a reduced-motion mirror. Every value
+   resolves to an existing custom property.
+   ========================================================================== */
+
+/* On /shop/ the .shead carries an eyebrow instead of a heading, so it sits in
+   the shead's baseline row next to the tabs. Its own bottom margin (which is
+   correct when an eyebrow sits above a section statement) would push the two
+   sides out of alignment. */
+.shead .sect__eyebrow { margin-bottom: 0; }
+
+/* The slash between the ordinal and the eyebrow label is punctuation, not
+   content, and reads as noise at full ink weight. */
+.sect__eyebrow > span[aria-hidden="true"] { color: var(--line-2); }
+
+/* The .shead already draws its own hairline (G2, .shead::after). Without this
+   the index's border-top lands a second hairline var(--s5) below the first,
+   which reads as a mistake rather than as a rule. The drawn rule becomes the
+   top line of the index and the first band hangs off it. */
+.shead + .index { border-top: 0; margin-top: var(--s3); }
+/* --- product ------------------------------------------------------------ */
+
+/* ==========================================================================
+   PRODUCT PAGE
+
+   Everything here is scoped to .pdp*, .plinth--pdp or .strip__*, so it cannot
+   collide with the shared component layer. It DEPENDS on that layer landing
+   first: the :root tokens (--t-name, --num, --wash-dark, --ink-dark-2),
+   .plate__wash (including the .pdp__plate 52% / --wash-dark override),
+   .plate__rail, .plate__soon, .plate__notes, .chip, .stamp, .lrow, .meter,
+   .plinth, .strip, .dusk, .dawn--sm, the .smoke sizing fix, and .pdp__plate in
+   the is-settled safety net.
+
+   Two rules below override app.css rather than adding to it: .pdp (which sets
+   5fr 6fr at 860px) and .pdp__name (which sets its own type). stage.css loads
+   last, so they win. The 860 to 900 window is closed explicitly, because a
+   two-column split at 880px squeezes the plate to nothing.
+   ========================================================================== */
+
+/* --- The crumb row and the two columns ---------------------------------- */
+
+.pdp__crumbs { padding-block: var(--s6); }
+.pdp__bay    { padding-block: var(--s5) var(--bay); }
+
+.pdp { display: grid; gap: var(--s7); align-items: start; }
+@media (max-width: 899px) { .pdp { grid-template-columns: 1fr; } }
+@media (min-width: 900px) { .pdp { grid-template-columns: 5fr 7fr; gap: var(--s9); } }
+
+/* --- The plate ----------------------------------------------------------
+   The one black box the spec allows, because the h1 lives inside it. It is
+   sticky only above 1100px: below that the right column is short enough that
+   a pinned plate just leaves a hole. */
+
+.pdp__plate {
+  position: relative;
+  display: flex;
+  min-height: clamp(26rem, 58vh, 40rem);
+  padding: var(--s7) var(--s6);
+  background: #08080A;
+  color: var(--paper);
+  overflow: hidden;
+  isolation: isolate;
+}
+@media (min-width: 900px)  { .pdp__plate { padding: var(--s8) var(--s7); } }
+@media (min-width: 1100px) { .pdp__plate { position: sticky; top: calc(var(--header-h) + var(--s6)); } }
+
+/* The frost crown. Opacity comes straight off the cooling meter, so this is
+   the product describing itself rather than decoration: Black Ice wears a
+   visible one, Pina Colada wears none. */
+.pdp__plate::before {
+  content: "";
+  position: absolute; inset: 0 0 auto; height: 34%;
+  z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(242,239,232,calc(.14 * var(--f-cold, 0))) 0%, transparent 100%);
+}
+
+/* One positioned child above the wash, the smoke and the crown, so the type
+   needs no z-index of its own and the sticky column stays predictable. */
+.pdp__plate-in {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column;
+  width: 100%;
+}
+.pdp__plate .plate__rail { margin-bottom: auto; }
+
+.pdp__name {
+  margin-block: var(--s6) var(--s4);
+  font-family: var(--display);
+  font-size: var(--t-name);
+  font-weight: 700;
+  line-height: .92;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.pdp__plate .plate__soon { color: var(--copper-2); }
+.pdp__plate .stamp { margin-top: var(--s6); }
+.pdp__plate .stamp, .pdp__plate .stamp svg { color: var(--ink-dark-2); }
+
+/* Gold on a tinted dark ground is not reliably visible, so the ring turns
+   paper inside both dark surfaces on this page. */
+.pdp__plate :focus-visible,
+.plinth--pdp :focus-visible { outline-color: var(--paper); outline-offset: 2px; }
+
+/* --- The right column ---------------------------------------------------- */
+
+.pdp__hr {
+  display: block; width: 48px; height: 1px;
+  margin-top: var(--s5);
+  background: var(--copper);
+}
+
+.pdp__info .plate__notes { margin-top: var(--s4); }
+
+.pdp__short {
+  margin-top: var(--s5);
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+/* The section heads on the right are caps labels, not display type. They are
+   signposts on a spec sheet; the only thing set at size on this page is the
+   name on the plate. */
+.pdp__h {
+  margin-top: var(--s8);
+  font-family: var(--display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--track);
+  color: var(--ink-3);
+}
+.pdp__h--lg {
+  margin-top: 0; margin-bottom: var(--s5);
+  font-size: var(--t-h2);
+  letter-spacing: .02em;
+  color: var(--ink);
+}
+
+.pdp__meters { display: grid; gap: var(--s4); margin-top: var(--s5); max-width: 26rem; }
+.pdp__lrows  { margin-top: var(--s5); max-width: 28rem; }
+
+.lrow__note {
+  margin-left: var(--s3);
+  font-family: var(--display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--track);
+  color: var(--copper-ink);
+}
+
+/* The bottle's single appearance on the site, at diagram scale beside its own
+   caption so it reads as a measurement, not as a product shot. */
+.pdp__diagram { display: flex; align-items: center; gap: var(--s5); margin-top: var(--s8); }
+.pdp__diagram .bottle { flex: 0 0 auto; width: 90px; max-width: 90px; margin-inline: 0; }
+.pdp__cap { max-width: 16ch; color: var(--ink-3); }
+
+.pdp__ing { margin-top: var(--s6); max-width: 52ch; line-height: 1.7; color: var(--ink-3); }
+
+/* --- The closing band ---------------------------------------------------- */
+
+.plinth--pdp .plinth__t { max-width: 20ch; }
+
+/* A9.7: the signup is the page's primary control, so its label is visible
+   rather than screen-reader only. Better fixed in signupForm() itself once
+   src/lib/ is open; this is the CSS-layer version of the same change. */
+.plinth--pdp .signup .sr {
+  position: static;
+  display: block;
+  width: auto; height: auto;
+  margin: 0 0 var(--s3);
+  overflow: visible;
+  clip-path: none;
+  font-family: var(--display);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--track);
+  color: var(--copper-2);
+}
+.plinth--pdp .signup__row { flex-wrap: wrap; }
+
+/* --- The cross-sell strip ------------------------------------------------ */
+
+.strip__n  { flex: 1 1 auto; }
+.strip__go { flex: 0 0 auto; color: var(--ink-3); transition: color .3s var(--ease), transform .3s var(--ease); }
+.strip__it:hover .strip__go,
+.strip__it:focus-visible .strip__go { color: var(--copper-ink); transform: translateX(4px); }
+
+/* --- Motion --------------------------------------------------------------
+   G1, above the fold tier. Duplicate of the rule Part 7 assigns to stage.css:
+   DEDUPE ON MERGE if Agent A has already landed it. The is-settled net that
+   makes it safe is Agent A's and must include .pdp__plate. Nothing else on
+   this page animates on entrance. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .pdp__plate .kw > span {
+    animation: rk-mask-up 1s var(--ease-mask) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 100ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp__plate .kw > span { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .strip__go { transition: none; }
+}
+
+@media print {
+  .pdp__plate { min-height: 0; padding: 0; background: #fff; color: #000; }
+  .pdp__plate::before { display: none !important; }
+  .pdp__name { color: #000; }
+}
+/* --- page ------------------------------------------------------------ */
+
+/* ==========================================================================
+   INTERIOR PAGES (page.js: about, help, wholesale, legal, flavours, contact)
+
+   Everything Part 4 specifies verbatim is Agent A's and is NOT repeated here.
+   This block depends on .grid12 (4.1), .ord (4.2), .chip (4.3), .phead--index
+   (4.9), .sect / .sect__eyebrow / .sect__statement (4.16), .matrix and
+   .tablewrap (4.12) and .meter (4.8) already being in stage.css.
+
+   Only the five things those sections leave open are below.
+   ========================================================================== */
+
+/* --- Stacked bays ---------------------------------------------------------
+
+   Two .bay blocks in a row pay the padding twice and the page opens a hole
+   between them. The second one keeps the first one's bottom padding and drops
+   its own top, so an interior page reads as one column of copy rather than as
+   three separately padded slabs. */
+
+.bay--flush { padding-top: 0; }
+
+/* --- The decision matrix ---------------------------------------------------
+
+   4.12 gives the table its structure. These are the two things it leaves to
+   the page: the row link and the closing cell. Gold interfaces, so the hover
+   is --copper-ink and nothing here ever picks up a flavour tint (L5). */
+
+.matrix tbody th a { color: var(--ink); }
+.matrix tbody tr:hover th a { color: var(--copper-ink); }
+
+.matrix__cta {
+  font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track);
+  color: var(--ink-3); white-space: nowrap;
+}
+.matrix tbody tr:hover .matrix__cta { color: var(--copper-ink); }
+
+/* The table is the one horizontal scroller on the site, so the wrapper takes a
+   tab stop. A tab stop with no visible ring is worse than no tab stop. */
+.tablewrap:focus-visible { outline: 2px solid var(--copper); outline-offset: 4px; }
+
+/* --- Numbered FAQ rows -----------------------------------------------------
+
+   The /help/ questions set as an index rather than as more prose: the ordinal
+   in a left rail, the question hanging off it. */
+
+.acc--index .acc__q { display: flex; align-items: baseline; gap: var(--s4); min-width: 0; }
+.acc--index .acc__q .ord { flex: 0 0 2.25rem; }
+.acc--index .acc__btn { align-items: baseline; }
+.acc--index .acc__btn:hover .ord,
+.acc--index .acc__btn:focus-visible .ord { color: var(--copper-ink); }
+
+/* rook.css collapses .acc__panel to a 0fr grid row and expects an inner
+   wrapper this markup does not have. Here the answers are open on load and the
+   script closes them with [hidden], so the panel is a plain block. The :not()
+   matters: without it this rule would out-specify the [hidden] default and the
+   toggle would stop working. */
+.acc--index .acc__panel:not([hidden]) { display: block; }
+.acc--index .acc__panel p { padding-bottom: var(--s5); }
+
+@media (max-width: 620px) {
+  .acc--index .acc__q { gap: var(--s3); }
+  .acc--index .acc__q .ord { flex-basis: 1.75rem; }
+}
+
+/* --- Contact form on the 12 column grid ------------------------------------
+
+   app.css caps .cform at 560px, which fights the grid. Everything spans the
+   full measure except the name and email pair. Below 900px .grid12 drops to
+   six columns, so 7/span 6 would run off the end: every field goes full width
+   there instead. */
+
+.cform { max-width: none; }
+.cform > * { grid-column: 1 / -1; }
+.cform .field { margin-bottom: 0; }
+.cform .field--half { grid-column: 1 / span 6; }
+.cform .field--half ~ .field--half { grid-column: 7 / span 6; }
+.cform__note { margin-bottom: var(--s3); }
+.cform__go { margin-top: var(--s3); }
+
+@media (max-width: 900px) {
+  .cform .field--half,
+  .cform .field--half ~ .field--half { grid-column: 1 / -1; }
+}
+/* --- journal ------------------------------------------------------------ */
+
+/* ==========================================================================
+   JOURNAL  (Agent F)
+
+   Additions only. Everything in Part 4.9 (.phead--index) and Part 4.11
+   (.ledger) is assumed present from Agent A and is not re-declared here.
+   Two of these blocks exist to neutralise live rook.css rules that would
+   otherwise fight the new markup, rather than editing rook.css itself.
+   ========================================================================== */
+
+/* --- Position in the set --------------------------------------------------
+   The journal data carries no date and no author, so the only honest piece of
+   metadata an article has is where it sits in the set. It is aria-hidden in
+   the markup because the same information is one click away on the index, and
+   read aloud it would be noise between the crumbs and the headline. It sits
+   tight above the h1, so the clamp(3.5rem, 8vh, 6rem) of air the spec puts
+   under the crumbs is preserved and still does its job. */
+
+.phead--index .phead__ord {
+  grid-column: 1 / -1;
+  display: flex; align-items: baseline; gap: var(--s2);
+  margin-bottom: var(--s5);
+}
+.phead--index .phead__ord .ord { color: var(--copper-ink); }
+.phead--index .phead__ord-s {
+  font-family: var(--num); font-size: var(--t-micro); font-weight: 600;
+  color: var(--line-2);
+}
+
+/* --- Ledger rail ----------------------------------------------------------
+   Inline on a phone so the row opens with its number, stacked on the desktop
+   grid where the rail has var(--rail) to itself. */
+
+.ledger__rail { display: flex; align-items: baseline; gap: var(--s3); }
+@media (min-width: 900px) {
+  .ledger__rail { flex-direction: column; gap: var(--s2); }
+}
+
+/* Only the previous and next rows carry this. Direction is real information,
+   so it is readable text rather than an arrow pointing left. */
+.ledger__dir {
+  font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track);
+  color: var(--ink-3);
+  transition: color .3s var(--ease);
+}
+.ledger__row:hover .ledger__dir,
+.ledger__row:focus-within .ledger__dir { color: var(--copper-ink); }
+
+/* --- Focus mirrors hover (A9.6) -------------------------------------------
+   The hit area is a stretched pseudo-element, so without this the row gives no
+   sign that the link inside it has keyboard focus. */
+
+.ledger__row:focus-within { border-bottom-color: var(--copper); }
+.ledger__row:focus-within .ord { color: var(--copper-ink); }
+.ledger__row:focus-within .ledger__go { color: var(--copper-ink); transform: translateX(4px); }
+
+/* --- Ledger below the grid breakpoint ------------------------------------
+   Once the row stacks to one column, an arrow pinned to the right edge floats
+   on its own with nothing to align to, so it sits under the excerpt as a read
+   on mark instead. */
+
+@media (max-width: 899px) {
+  .ledger__go { justify-self: start; margin-top: var(--s2); }
+  .ledger__ex { max-width: 62ch; }
+}
+
+/* --- Post navigation ------------------------------------------------------
+   rook.css around line 808 still paints .postnav as a two column grid with its
+   own top rule, and sets .postnav p in display type at var(--t-h3). Both are
+   wrong now that the foot of an article is two ledger rows: the grid would put
+   the heading in one column and the rows in the other, and the p rule would
+   hit .ledger__ex. This resets them where they land rather than editing
+   rook.css out from under Agent A. */
+
+.postnav {
+  display: block;
+  gap: 0;
+  margin-top: var(--s9);
+  padding-top: 0;
+  border-top: 0;
+}
+@media (min-width: 640px) { .postnav { grid-template-columns: none; } }
+
+.postnav__h {
+  font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track);
+  color: var(--ink-3);
+  margin-bottom: var(--s5);
+}
+.postnav .ledger__ex {
+  margin-top: 0;
+  font-family: var(--body); font-size: var(--t-small); font-weight: 400;
+  color: var(--ink-2);
+}
+
+/* --- Long form measure ----------------------------------------------------
+   rook.css sets .prose to 72ch, which is right for a terms page read in
+   chunks and too wide for something read start to finish. The opening
+   paragraph steps up to the standfirst size so the article has one clear way
+   in, then settles into body size for the rest. */
+
+.prose--long { max-width: 62ch; }
+.prose--long p { line-height: 1.75; }
+.prose--long > p:first-child { font-size: 1.0625rem; color: var(--ink); }
+
+/* --- Reduced motion -------------------------------------------------------
+   Nothing here animates on entrance, so there is nothing to pin. The one
+   moving part is the hover arrow, which is stilled. */
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger__go, .ledger__dir { transition: none !important; }
+}
+/* --------------------------------------------------------------------------
+   LAST-RESORT REVEAL
+
+   rook.css hides .rv the moment the inline head script adds .rk-js, and only
+   rook.js ever takes that back. If rook.js fails to load, 404s or throws, the
+   reveal never happens and the page keeps its primary content at opacity 0
+   permanently. Interior pages now carry real content in .rv, so that failure
+   would empty them.
+
+   The head script sets .rk-shown on a three second timer of its own, inline
+   and independent of any external file, so recovery does not depend on the
+   thing that might be missing. It is deliberately blunt: if we have got this
+   far, being visible beats being animated.
+   -------------------------------------------------------------------------- */
+
+.rk-shown .rv { opacity: 1 !important; transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rk-shown .rv { transition: none !important; }
+}

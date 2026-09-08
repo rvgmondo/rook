@@ -60,7 +60,10 @@
         $$('.shead__tab', tabs).forEach(function (t) { t.classList.remove('is-on'); });
         tab.classList.add('is-on');
         var f = tab.getAttribute('data-filter');
-        $$('.card', grid).forEach(function (card) {
+        // Keyed off the data attribute, not a class. The markup around it has
+        // been a .card and is now a .plate; the thing that actually matters is
+        // that an item declares whether it is cold.
+        $$('[data-cold]', grid).forEach(function (card) {
           var cold = card.getAttribute('data-cold') === '1';
           var show = f === 'all' || (f === 'cold' && cold) || (f === 'warm' && !cold);
           card.style.display = show ? '' : 'none';

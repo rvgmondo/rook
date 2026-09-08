@@ -1,5 +1,5 @@
-// The ROOK smoke mark (verbatim from the brand vector artwork — do not redraw)
-// and the small utility icon set. Stroke icons are 1.1–1.25px, no fills.
+// The ROOK smoke mark (verbatim from the brand vector artwork - do not redraw)
+// and the small utility icon set. Stroke icons are 1.1-1.25px, no fills.
 
 export function mark(cls = '') {
   return `<svg class="mark ${cls}" viewBox="0 0 3423 8013" fill="none" focusable="false" aria-hidden="true">

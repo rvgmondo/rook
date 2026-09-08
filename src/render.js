@@ -128,8 +128,47 @@ export function ageGate(error = '') {
   </div>`;
 }
 
+// --- The foot ----------------------------------------------------------------
+//
+// Every page body ends on paper and the footer is black, so the dusk always
+// runs between them: the two never meet at a hard edge.
+//
+// The plinth is the waitlist band that sits in that gap. Interior pages pass a
+// source tag and get one; the product page passes false because it closes on
+// its own black notify band and two blacks back to back would read as one
+// muddy block. It still gets the dusk.
+//
+// The form is written out here rather than imported from lib/components.js
+// because that module imports esc() from this one, and a cycle between the
+// layout and its own components is not worth the convenience.
+function foot({ plinth = false, plinthId = '' } = {}) {
+  const dusk = `<div class="dusk" aria-hidden="true"></div>`;
+  if (!plinth) return dusk;
+
+  const src = String(plinth);
+  const id = plinthId ? ` id="${esc(plinthId)}"` : '';
+  return `${dusk}
+  <section class="plinth"${id}>
+    <div class="wrap plinth__in">
+      <h2 class="plinth__t">Join the list</h2>
+      <p class="plinth__p">ROOK is not on sale yet. Leave your email and we will tell you the morning the first batch lands, before it goes anywhere else.</p>
+      <form class="signup plinth__form" method="post" action="/signup" data-signup>
+        <input type="hidden" name="source" value="${esc(src)}">
+        <input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <div class="signup__row">
+          <label class="sr" for="plinth-${esc(src)}-email">Email address</label>
+          <input class="input" id="plinth-${esc(src)}-email" type="email" name="email" placeholder="Your email address" autocomplete="email" required>
+          <button class="btn btn--copper" type="submit">Join the list</button>
+        </div>
+        <p class="notice notice--ondark signup__msg" data-signup-msg aria-live="polite" hidden></p>
+      </form>
+      <p class="plinth__fine">Adults 18 or older only. We send a note when there is something worth saying, and nothing else.</p>
+    </div>
+  </section>`;
+}
+
 // --- Full page shell ---------------------------------------------------------
-export function layout({ title, description, body, home = false, gated = false, gateError = '', canonical = '', jsonld = [] } = {}) {
+export function layout({ title, description, body, home = false, gated = false, gateError = '', canonical = '', jsonld = [], plinth = false, plinthId = '' } = {}) {
   const fullTitle = title ? `${title} - ROOK` : 'ROOK';
   const desc = description || site.tagline;
   return `<!doctype html>
@@ -162,14 +201,16 @@ html{background:#F5F3EE}
 <link rel="stylesheet" href="/css/rook.css?v=${ASSET_V}">
 <link rel="stylesheet" href="/css/shop.css?v=${ASSET_V}">
 <link rel="stylesheet" href="/css/app.css?v=${ASSET_V}">
+<link rel="stylesheet" href="/css/parts.css?v=${ASSET_V}">
 <link rel="stylesheet" href="/css/stage.css?v=${ASSET_V}">
-<script>document.documentElement.className+=" rk-js";</script>
+<script>document.documentElement.className+=" rk-js";setTimeout(function(){document.documentElement.classList.add("rk-shown")},3000);</script>
 </head>
 <body class="${gated ? 'is-gated is-locked' : ''}">
 <a class="skip" href="#main">Skip to content</a>
 <div class="site">
 ${header({ home })}
 <main id="main">${body}</main>
+${foot({ plinth, plinthId })}
 ${footer()}
 </div>
 ${gated ? ageGate(gateError) : ''}

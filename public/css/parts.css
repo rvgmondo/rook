@@ -1,0 +1,324 @@
+/* ==========================================================================
+   ROOK - PARTS
+
+   The shared component vocabulary every interior page is built from. Loaded
+   after app.css and before stage.css, so the page-level joins in stage.css
+   can still override a component without editing it here.
+
+   It has to live in one place. Five pages each inventing their own listing
+   row is how a site stops looking like one site.
+
+   The governing constraint is that there is no product photography and there
+   will not be for a while, so nothing here waits for a picture. A flavour is
+   identified by a colour wash that reads as ink soaked up through the paper,
+   a 10px chip and a numeral. Format is a drawn maker's stamp, never a bottle
+   shot.
+
+   Two rules worth stating, because breaking either is what would cheapen it:
+
+     Colour identifies, gold interfaces. A flavour tint appears in the wash,
+     the chip and the product plate. It never touches a button, a link, a
+     focus ring or a rule.
+
+     The wash opacity is capped at .12 on paper and .22 on black. At full
+     strength this stops looking like a spirits brand and starts looking like
+     a fruit juice brand.
+   ========================================================================== */
+
+:root {
+  --num:        "Saira", "Raleway", "Arial Narrow", sans-serif;
+  --t-title:    clamp(2.5rem, 7vw, 5rem);
+  --t-plate:    clamp(2.25rem, 6.5vw, 4.5rem);
+  --t-name:     clamp(2.75rem, 6vw, 5.5rem);
+  --rail:       8rem;
+  --wash-paper: .12;
+  --wash-dark:  .22;
+  --dusk-h:     clamp(60px, 8vh, 120px);
+  --dawn-sm-h:  clamp(48px, 6vh, 90px);
+  --ink-dark-2: #CFC6BC;   /* secondary text on black, matches the hero lede */
+}
+
+/* --------------------------------------------------------------------------
+   THE COLUMN SYSTEM
+   Asymmetry is the point. Never split it 6 and 6.
+   -------------------------------------------------------------------------- */
+
+.grid12 { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter); row-gap: var(--s6); }
+@media (max-width: 900px) { .grid12 { grid-template-columns: repeat(6, 1fr); } }
+@media (max-width: 620px) { .grid12 { grid-template-columns: repeat(4, 1fr); } }
+
+/* --------------------------------------------------------------------------
+   THE ORDINAL
+
+   One numbering system for the whole site: small, muted, tabular figures. The
+   homepage step numerals are deliberately the opposite, big and gold, so the
+   two can never be read as the same object.
+   -------------------------------------------------------------------------- */
+
+.ord {
+  font-family: var(--num); font-size: var(--t-micro); font-weight: 600;
+  letter-spacing: var(--track); font-variant-numeric: tabular-nums;
+  color: var(--ink-3); transition: color .3s var(--ease);
+}
+.bay--dark .ord, .plinth .ord, .pdp__plate .ord { color: #9C9188; }
+
+/* The guide band is not part of the range, so it carries rules, not a number. */
+.ord--rule { display: inline-block; width: 18px; height: 5px; border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); }
+
+.sect__eyebrow {
+  display: flex; align-items: center; gap: var(--s3);
+  font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track); color: var(--ink-3);
+  margin-bottom: var(--s5);
+}
+.bay--dark .sect__eyebrow, .plinth .sect__eyebrow { color: #9C9188; }
+
+/* --------------------------------------------------------------------------
+   THE IDENTITY CHIP
+   -------------------------------------------------------------------------- */
+
+.chip {
+  display: inline-block; width: 10px; height: 10px; flex: 0 0 auto;
+  background: var(--f-tint, var(--copper));
+  border: 1px solid var(--line-2);
+}
+.bay--dark .chip, .pdp__plate .chip, .plinth .chip { border-color: rgba(242,239,232,.28); }
+.matrix tbody th > .chip { margin-right: var(--s3); }
+
+/* --------------------------------------------------------------------------
+   THE FLAVOUR COLOUR FIELD
+
+   Gradient only: no filter, no SVG, nothing that costs a repaint, because it
+   repeats once per row. It reads as ink that soaked up through the paper from
+   underneath rather than as a coloured panel.
+   -------------------------------------------------------------------------- */
+
+.plate__wash {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 34%;
+  z-index: 0; pointer-events: none;
+  opacity: var(--wash-paper);
+  background:
+    radial-gradient(120% 140% at 22% 128%, var(--f-tint, var(--copper)) 0%, transparent 62%),
+    radial-gradient(90% 120% at 74% 136%, var(--f-tint, var(--copper)) 0%, transparent 58%);
+}
+.pdp__plate .plate__wash { height: 52%; opacity: var(--wash-dark); }
+
+/* --------------------------------------------------------------------------
+   THE FLAVOUR BAND
+
+   The one listing component, on every page that lists flavours. Full measure,
+   one per row, hairline separated, and containing no bottle.
+   -------------------------------------------------------------------------- */
+
+.index { border-top: 1px solid var(--line); }
+.index--tail { border-top: 0; }
+
+.plate {
+  position: relative; display: grid; gap: var(--s3);
+  padding-block: var(--s6); border-bottom: 1px solid var(--line);
+  isolation: isolate; overflow: hidden;
+}
+@media (min-width: 900px) {
+  .plate { grid-template-columns: var(--rail) minmax(0, 1fr) 16rem; column-gap: var(--s6); align-items: start; }
+}
+.plate > *:not(.plate__wash) { position: relative; z-index: 1; }
+
+.plate__rail { display: flex; align-items: center; gap: var(--s3); }
+
+.plate__name {
+  font-family: var(--display); font-size: var(--t-plate); font-weight: 700;
+  text-transform: uppercase; line-height: .95; letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+/* The whole band is one hit area and one tab stop. Everything else inside it
+   is inert, which is why .plate__cta is a span. */
+.plate__link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+
+.plate__rule {
+  display: block; width: 100%; height: 1px; margin-top: var(--s4);
+  background: var(--copper); transform: scaleX(.14); transform-origin: 0 50%;
+  transition: transform .42s var(--ease-out);
+}
+
+.plate__notes { margin-top: var(--s4); }
+.plate__notes li {
+  font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track);
+  color: var(--ink-3); line-height: 2.1;
+}
+
+.plate__body { margin-top: var(--s4); color: var(--ink-2); font-size: var(--t-small); max-width: 52ch; }
+
+.plate__facts .fact { display: flex; justify-content: space-between; gap: var(--s4); padding-block: var(--s2); border-bottom: 1px solid var(--line); }
+.plate__facts dt { font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track-2); color: var(--ink-3); }
+.plate__facts dd { margin: 0; font-family: var(--num); font-size: var(--t-small); font-variant-numeric: tabular-nums; text-align: right; }
+
+.plate__soon { margin-top: var(--s4); font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); color: var(--copper-ink); }
+.plate__cta { display: inline-flex; align-items: center; gap: var(--s2); margin-top: var(--s3); font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); color: var(--ink); }
+
+/* Hover is a drawn rule and a colour shift. No lift, no shadow, no scale. */
+.plate:hover .plate__rule, .plate:focus-within .plate__rule { transform: scaleX(1); }
+.plate:hover .ord, .plate:focus-within .ord { color: var(--copper-ink); }
+
+@media (max-width: 640px) {
+  .plate__facts { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); }
+  .plate__facts .fact { border-bottom: 0; padding-block: 0; gap: var(--s2); }
+  .plate__notes li { display: inline; line-height: 1.9; }
+  /* The separator is a drawn hairline, never a punctuation character. */
+  .plate__notes li + li::before { content: ""; display: inline-block; width: 14px; height: 1px; background: var(--line-2); vertical-align: middle; margin-inline: var(--s2); }
+}
+
+/* --------------------------------------------------------------------------
+   THE FORMAT STAMP
+   Format is stated by a drawn maker's mark, never by a product shot.
+   -------------------------------------------------------------------------- */
+
+.stamp { display: inline-flex; align-items: center; gap: var(--s2); color: var(--line-2); font-family: var(--display); font-size: var(--t-micro); font-weight: 600; letter-spacing: var(--track); text-transform: uppercase; }
+.stamp svg { color: currentColor; }
+.plate__facts .stamp { color: var(--ink-3); }
+
+/* --------------------------------------------------------------------------
+   THE DOT LEADER SPEC ROW
+   Twelve pixels of leader is the difference between engineered and
+   administrative.
+   -------------------------------------------------------------------------- */
+
+.lrows { border-top: 1px solid var(--line); }
+.lrow { display: flex; align-items: baseline; gap: var(--s3); padding-block: var(--s3); border-bottom: 1px solid var(--line); }
+.lrow__k { font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track-2); color: var(--ink-3); white-space: nowrap; }
+.lrow__d { flex: 1 1 auto; border-bottom: 1px dotted var(--line-2); transform: translateY(-.3em); }
+.lrow__v { font-family: var(--num); font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   THE INSTRUMENT SCALE
+
+   Was a segmented battery gauge, which read as a game UI and shipped no text
+   at all to a screen reader. Now a scale carrying a visible value.
+   -------------------------------------------------------------------------- */
+
+.meter { display: grid; grid-template-columns: 6.5rem 1fr 2.75rem; align-items: end; gap: var(--s4); padding-bottom: var(--s2); border-bottom: 1px solid var(--line); }
+.meter__label { font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); color: var(--ink-3); }
+.meter__bar { display: flex; align-items: flex-end; justify-content: space-between; height: 16px; }
+.meter__seg { width: 1px; height: 10px; background: var(--line-2); }
+.meter__seg.is-on, .meter__seg.on { height: 16px; background: var(--copper); }
+.meter__v { font-family: var(--num); font-size: var(--t-small); font-variant-numeric: tabular-nums; text-align: right; color: var(--ink); }
+.meter__d { color: var(--ink-3); }
+
+/* --------------------------------------------------------------------------
+   THE TITLE PAGE
+
+   Replaces the grey band, which was a shop convention. Air before a title is
+   the cheapest premium signal there is, and the site had none.
+   -------------------------------------------------------------------------- */
+
+.phead--index { background: var(--paper); border-bottom: 0; padding-block: var(--s7) var(--s8); }
+.phead--index .crumbs { grid-column: 1 / -1; margin-bottom: clamp(3.5rem, 8vh, 6rem); }
+.phead--index .phead__title { grid-column: 1 / span 9; margin-top: 0; font-family: var(--display); font-size: var(--t-title); font-weight: 700; text-transform: uppercase; line-height: .98; letter-spacing: -.01em; }
+.phead--index .phead__rule { grid-column: 1 / -1; position: relative; display: block; margin-top: var(--s6); height: 1px; background: var(--line); transform-origin: 0 50%; }
+.phead--index .phead__rule::before { content: ""; position: absolute; left: 0; top: 0; width: 48px; height: 1px; background: var(--copper); }
+.phead--index .phead__lede { grid-column: 1 / span 8; margin-top: var(--s5); font-size: 1.0625rem; color: var(--ink-2); max-width: 52ch; }
+@media (max-width: 900px) { .phead--index .phead__title, .phead--index .phead__lede { grid-column: 1 / -1; } }
+
+/* --------------------------------------------------------------------------
+   THE BLACK FOOT
+
+   Paper never meets the black footer at a hard edge. The waitlist band and
+   the footer read as one continuous base separated by a single gold hairline,
+   so the page visibly sits on something.
+   -------------------------------------------------------------------------- */
+
+.dusk { height: var(--dusk-h); margin-bottom: -1px; background: linear-gradient(180deg, var(--paper) 0%, #6E6960 28%, #171613 62%, var(--dark) 100%); }
+.dawn--sm { height: var(--dawn-sm-h); }
+
+.plinth { position: relative; background: var(--dark); color: var(--paper); overflow: hidden; isolation: isolate; padding-block: var(--s10) var(--s9); }
+.plinth > .wrap { position: relative; z-index: 2; }
+.plinth__t { font-family: var(--display); font-size: var(--t-title); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: -.01em; max-width: 16ch; }
+.plinth__p { margin-top: var(--s5); max-width: 46ch; color: var(--ink-dark-2); }
+.plinth__fine { margin-top: var(--s5); font-size: var(--t-micro); color: #8F857C; max-width: 52ch; }
+
+.plinth .signup { margin-top: var(--s7); max-width: 520px; }
+.plinth .signup__row { display: flex; gap: var(--s3); }
+.plinth .signup__row .input { flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.2); color: var(--paper); }
+.plinth .signup__row .input::placeholder { color: #8F857C; }
+.plinth .signup__row .input:focus { border-color: var(--copper); background: rgba(255,255,255,.08); }
+.plinth .signup__row .btn { flex: 0 0 auto; white-space: nowrap; }
+.plinth .field__label { color: var(--copper-2); }
+
+.plinth + .ftr { padding-top: var(--s7); border-top: 1px solid rgba(184,152,90,.4); }
+
+@media (max-width: 520px) {
+  .plinth .signup__row { flex-direction: column; align-items: stretch; }
+  .plinth .signup__row .btn { width: 100%; }
+}
+
+/* --------------------------------------------------------------------------
+   THE JOURNAL INDEX ROW
+   Three articles as three well set lines beats three empty grey rectangles
+   where hero images should be.
+   -------------------------------------------------------------------------- */
+
+.ledger { border-top: 1px solid var(--line); }
+.ledger__row { position: relative; display: grid; gap: var(--s3); padding-block: var(--s6); border-bottom: 1px solid var(--line); transition: border-color .3s var(--ease); }
+@media (min-width: 900px) { .ledger__row { grid-template-columns: var(--rail) minmax(0, 1fr) minmax(0, 34ch) 3rem; column-gap: var(--s6); align-items: baseline; } }
+.ledger__title { font-family: var(--display); font-size: var(--t-h2); font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
+.ledger__ex { color: var(--ink-2); font-size: var(--t-small); }
+.ledger__go { justify-self: end; color: var(--ink-3); transition: color .3s var(--ease), transform .3s var(--ease); }
+.ledger__row a::after { content: ""; position: absolute; inset: 0; }
+.ledger__row:hover { border-bottom-color: var(--copper); }
+.ledger__row:hover .ord { color: var(--copper-ink); }
+.ledger__row:hover .ledger__go { color: var(--copper-ink); transform: translateX(4px); }
+
+/* --------------------------------------------------------------------------
+   THE DECISION TABLE
+
+   A real table, scored, with a caption. The most convincing engineered moment
+   on the site, and it needs no photography whatsoever. It scrolls rather than
+   restructuring, so there is one layout to reason about instead of two.
+   -------------------------------------------------------------------------- */
+
+.tablewrap { overflow-x: auto; }
+.matrix { width: 100%; min-width: 720px; border-collapse: collapse; }
+.matrix th, .matrix td { padding: var(--s4) var(--s4) var(--s4) 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+.matrix thead th { font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); color: var(--ink-3); border-bottom-color: var(--line-2); }
+.matrix tbody th { font-family: var(--display); font-size: var(--t-h3); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.matrix .meter { grid-template-columns: 1fr 2.25rem; border-bottom: 0; padding-bottom: 0; }
+.matrix .meter__label { display: none; }
+.matrix__cta { font-family: var(--display); font-size: var(--t-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); color: var(--copper-ink); white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   THE CROSS-SELL ROW
+   -------------------------------------------------------------------------- */
+
+.strip { border-top: 1px solid var(--line); }
+.strip__it { position: relative; display: flex; align-items: center; gap: var(--s4); padding-block: var(--s5); border-bottom: 1px solid var(--line); font-family: var(--display); font-size: var(--t-h2); font-weight: 700; text-transform: uppercase; letter-spacing: .02em; transition: color .3s var(--ease); }
+.strip__n { flex: 1 1 auto; }
+.strip__go { flex: 0 0 auto; color: var(--ink-3); transition: transform .3s var(--ease), color .3s var(--ease); }
+.strip__it:hover { color: var(--copper-ink); }
+.strip__it:hover .strip__go { transform: translateX(4px); color: var(--copper-ink); }
+
+/* --------------------------------------------------------------------------
+   THE NUMBERED DARK COLUMNS
+
+   Replaces three boxes. Bare numerals divided by hairlines. The numeral is
+   big and gold precisely so it cannot be confused with the .ord system.
+   -------------------------------------------------------------------------- */
+
+.cols { display: grid; gap: var(--s7); }
+@media (min-width: 860px) {
+  .cols { grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .cols__i { padding-inline: var(--s7); border-left: 1px solid var(--line-dark); }
+  .cols__i:first-child { padding-left: 0; border-left: 0; }
+  .cols__i:last-child { padding-right: 0; }
+}
+.cols__n { font-family: var(--num); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 600; line-height: 1; color: var(--copper-2); font-variant-numeric: tabular-nums; }
+.cols__h { margin-top: var(--s4); font-family: var(--display); font-size: var(--t-h3); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--paper); }
+.cols__p { margin-top: var(--s3); color: var(--ink-dark-2); font-size: var(--t-small); max-width: 34ch; }
+
+/* --------------------------------------------------------------------------
+   THE TICKER ON PAPER
+   -------------------------------------------------------------------------- */
+
+.brands--paper { background: var(--paper); border-block: 1px solid var(--line); }
+.brands--paper .brands__b { color: var(--ink-3); }
+.brands--paper .brands__b:hover { color: var(--copper-ink); }
