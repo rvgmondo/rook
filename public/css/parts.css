@@ -376,3 +376,114 @@
 /* The product page cross-sell section closes the page on paper. */
 .pdp__also { padding-block: var(--bay); }
 .plinth__in { position: relative; z-index: 2; }
+
+/* ==========================================================================
+   ATMOSPHERE
+
+   The pages were structurally right and still read as a wireframe. Three
+   reasons, all of them fixable without touching a line of markup:
+
+     There was one typeface doing every job, so nothing had contrast against
+     anything else.
+
+     The ground was a flat fill. Premium print has tooth; a screen imitating
+     paper with a solid hex reads as a document, not as a brand.
+
+     The flavour wash was capped so low it was invisible, which meant five
+     flavours looked identical and the one piece of colour identity the site
+     owns did no work at all.
+   ========================================================================== */
+
+/* --- Paper tooth ----------------------------------------------------------
+
+   Fractal noise over the whole viewport, fixed so it behaves like grain in
+   the paper rather than a texture glued to the content. It is a data URI, so
+   it costs no request, and it sits above everything with pointer-events off
+   so it can never intercept a click. Roughly 3%: felt, not seen. */
+
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+@media print { body::after { display: none; } }
+
+/* --- The wash, made to actually work --------------------------------------
+
+   It was a 34% band at .12, which on a warm paper ground is indistinguishable
+   from nothing. Now it is a tall soft field rising from the lower left, so a
+   flavour is legible as a colour the moment you look at the row, and the
+   whole band tilts fractionally warm or cool rather than being decorated in
+   one corner. Still well under the level where it would read as fruit juice. */
+
+.plate__wash {
+  height: 100%;
+  opacity: .17;
+  background:
+    radial-gradient(78% 118% at 6% 104%, var(--f-tint, var(--copper)) 0%, transparent 64%),
+    radial-gradient(52% 88% at 88% 118%, var(--f-tint, var(--copper)) 0%, transparent 60%);
+  transition: opacity .5s var(--ease-out);
+}
+.plate:hover .plate__wash, .plate:focus-within .plate__wash { opacity: .3; }
+
+/* --- The ghost numeral ----------------------------------------------------
+
+   A large index figure sitting behind each band. It is what turns a list of
+   rows into a catalogue, and it is drawn with a CSS counter, so it needs no
+   markup change and cannot fall out of step with the rail numbers: both count
+   the same DOM.
+
+   Hidden from assistive tech by being generated content on a decorative
+   pseudo-element, and hidden below 900px where there is no room for it. */
+
+.index { counter-reset: plate; }
+.plate { counter-increment: plate; }
+
+@media (min-width: 900px) {
+  .plate::before {
+    content: counter(plate, decimal-leading-zero);
+    position: absolute; right: -.06em; bottom: -.34em;
+    z-index: 0; pointer-events: none;
+    font-family: var(--num);
+    font-size: clamp(9rem, 17vw, 15rem);
+    font-weight: 700; line-height: .74;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    opacity: .045;
+    transition: opacity .5s var(--ease-out), transform .7s var(--ease-out);
+  }
+  .plate:hover::before, .plate:focus-within::before { opacity: .08; transform: translateX(-8px); }
+  .plate--guide::before { content: none; }
+}
+
+/* --- Typographic contrast -------------------------------------------------
+
+   Raleway was doing display and body both, which is why the hierarchy read
+   flat. Saira now carries everything technical: numerals, labels, spec
+   values, tabs. Raleway keeps the names and the reading copy. Two registers,
+   one of them wide and mechanical, and suddenly the page has structure. */
+
+.plate__name { letter-spacing: -.022em; }
+.plate__notes li { font-family: var(--num); letter-spacing: .16em; line-height: 2.3; color: var(--ink-2); }
+.plate__soon,
+.plate__cta,
+.sect__eyebrow,
+.shead__tab,
+.crumbs { font-family: var(--num); }
+.lrow__k, .meter__label, .plate__facts dt { font-family: var(--num); }
+
+/* The eyebrow gets a rule so a section starts on a mark, not on air. */
+.sect__eyebrow::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--line); margin-left: var(--s3); }
+
+/* --- Rhythm ---------------------------------------------------------------
+   Bands were uniform, which made a long index monotonous. A touch more room
+   and a heavier first rule give the list a top and a cadence. */
+
+.plate { padding-block: clamp(2.25rem, 4.5vw, 3.75rem); }
+.index { border-top-width: 2px; border-top-color: var(--ink); }
+
+/* --- The title page, with the rule doing something ------------------------ */
+
+.phead--index .phead__rule::before { width: 96px; height: 2px; top: -1px; }
