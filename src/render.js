@@ -216,6 +216,7 @@ ${footer()}
 ${gated ? ageGate(gateError) : ''}
 <script src="/js/rook.js?v=${ASSET_V}" defer></script>
 ${home || gated ? `<script src="/js/smoke.js?v=${ASSET_V}" defer></script>` : ''}
+<script src="/js/plate-smoke.js?v=${ASSET_V}" defer></script>
 </body>
 </html>`;
 }

@@ -56,6 +56,7 @@ function plate(p, i, { as = 'h3' } = {}) {
   // page header on navigation.
   return `<article class="plate rv" data-cold="${p.meters.cooling >= 3 ? '1' : '0'}" style="--f-tint:${esc(p.tint)};view-transition-name:rook-plate-${esc(p.slug)}">
     <span class="plate__wash" aria-hidden="true"></span>
+    <canvas class="plate__smoke" data-smoke-tint="${esc(p.tint)}" aria-hidden="true"></canvas>
     <div class="plate__rail"><span class="ord">${ord(i + 1)}</span><span class="chip" aria-hidden="true"></span></div>
     <div class="plate__main">
       <${as} class="plate__name"><a class="plate__link" href="${url}">${words(p.name)}</a></${as}>

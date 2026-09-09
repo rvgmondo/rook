@@ -121,7 +121,10 @@
 @media (min-width: 900px) {
   .plate { grid-template-columns: var(--rail) minmax(0, 1fr) 16rem; column-gap: var(--s6); align-items: start; }
 }
-.plate > *:not(.plate__wash) { position: relative; z-index: 1; }
+/* The wash and the smoke canvas are both backdrops and must stay out of the
+   grid flow. Miss either and it takes a column, which silently shunts the
+   name into the spec column's width and wraps it. */
+.plate > *:not(.plate__wash):not(.plate__smoke) { position: relative; z-index: 1; }
 
 .plate__rail { display: flex; align-items: center; gap: var(--s3); }
 
@@ -487,3 +490,102 @@ body::after {
 /* --- The title page, with the rule doing something ------------------------ */
 
 .phead--index .phead__rule::before { width: 96px; height: 2px; top: -1px; }
+
+/* ==========================================================================
+   THE FLAVOUR PLATE, REBUILT
+
+   The listing was hairline rows on cream with a pale tint smudged into one
+   corner. Five of them looked like a spreadsheet with a gradient applied, and
+   the tints - pink, lilac, yellow on warm paper - read as a slide deck.
+
+   The site owns exactly one genuinely expensive thing: a volumetric smoke
+   shader that is also, literally, the logo mark. It was being used once, in
+   the hero, and then the pages fell back to CSS gradients.
+
+   So a flavour is now a dark object laid on the paper with its own live
+   smoke in the brand's tint. The page ground stays light and frames them, so
+   the site reads light overall while each flavour is something to look at.
+   Every plate is the same material as the opener, because it is literally the
+   same shader.
+   ========================================================================== */
+
+.index { border-top: 0; counter-reset: plate; }
+
+.plate {
+  background: #0B0B0D;
+  color: var(--paper);
+  border-bottom: 0;
+  margin-block: clamp(1rem, 2vw, 1.75rem);
+  padding: clamp(1.75rem, 3.4vw, 3rem);
+  min-height: clamp(260px, 30vw, 360px);
+  align-items: end;
+  overflow: hidden;
+}
+
+/* The live canvas, and the CSS gradient that stays underneath it forever as
+   the fallback for no WebGL, a lost context or a failed compile. */
+.plate__smoke {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%;
+  display: block; pointer-events: none;
+  opacity: 0; transition: opacity 1.1s var(--ease-out);
+}
+.plate__smoke.is-live { opacity: 1; }
+
+.plate__wash { height: 100%; opacity: .38; }
+.plate:hover .plate__wash, .plate:focus-within .plate__wash { opacity: .5; }
+
+/* A scrim under the type. The smoke leans left, which is exactly where the
+   name sits, so contrast cannot be left to whatever the shader is doing. */
+.plate::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(6,6,8,.82) 0%, rgba(6,6,8,.55) 42%, rgba(6,6,8,.28) 72%, rgba(6,6,8,.5) 100%);
+}
+.plate > *:not(.plate__wash):not(.plate__smoke) { z-index: 2; }
+
+/* Type reversed out. */
+.plate__name { color: var(--paper); letter-spacing: -.025em; }
+.plate .ord { color: rgba(242,239,232,.55); }
+.plate .chip { border-color: rgba(242,239,232,.4); }
+.plate__notes li { color: rgba(242,239,232,.62); }
+.plate__body { color: rgba(242,239,232,.66); }
+.plate__facts .fact { border-bottom-color: rgba(242,239,232,.14); }
+.plate__facts dt { color: rgba(242,239,232,.45); }
+.plate__facts dd { color: var(--paper); }
+.plate__soon { color: var(--copper-2); }
+.plate__cta { color: var(--paper); }
+.plate__rule { background: var(--copper-2); }
+
+/* The ghost numeral was clipping against the spec column and reading as a
+   rendering fault. On the dark ground it can sit properly inside the plate. */
+@media (min-width: 900px) {
+  .plate::before {
+    right: auto; left: clamp(1.75rem, 3.4vw, 3rem); top: clamp(1.25rem, 2.4vw, 2rem); bottom: auto;
+    font-size: clamp(6rem, 11vw, 10rem);
+    color: var(--paper);
+    opacity: .07;
+  }
+  .plate:hover::before, .plate:focus-within::before { opacity: .12; transform: none; }
+  /* The rail number would double up with the ghost, so it steps aside. */
+  .plate__rail .ord { display: none; }
+}
+
+/* The guide band is not a flavour, so it stays on paper: it is the one row in
+   the index that is a signpost rather than a product. */
+.plate--guide {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line-2);
+  min-height: 0;
+}
+.plate--guide::after { content: none; }
+.plate--guide .plate__name { color: var(--ink); }
+.plate--guide .plate__body { color: var(--ink-2); }
+.plate--guide .plate__cta { color: var(--ink); }
+.plate--guide .ord { color: var(--ink-3); }
+.plate--guide .plate__rule { background: var(--copper); }
+
+@media (prefers-reduced-motion: reduce) {
+  .plate__smoke { transition: none; }
+}
