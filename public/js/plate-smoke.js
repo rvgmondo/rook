@@ -80,15 +80,19 @@
     /* Drifts in from the left, because the flavour name sits on that side and
        the smoke should gather behind it rather than fight the spec column. */
     '  float x    = gl_FragCoord.x / u_res.x;',
-    '  float lean = smoothstep(1.55, -0.35, x);',
-    '  float band = smoothstep(-0.30, 0.30, gl_FragCoord.y / u_res.y);',
+    '  float lean = 0.62 + 0.38 * smoothstep(1.25, -0.15, x);',
+    '  float band = 0.55 + 0.45 * smoothstep(-0.35, 0.55, gl_FragCoord.y / u_res.y);',
 
     '  float d = f * lean * band * u_gain;',
-    '  d = smoothstep(0.02, 0.48, d);',
+    '  d = smoothstep(0.13, 0.52, d);',
 
     /* Premultiplied against black: the plate ground is near black, so the
        smoke is the tint lifting out of it rather than a colour laid on top. */
-    '  vec3 col = u_tint * (0.45 + 0.55 * d);',
+    /* Real smoke catches light: thin edges stay the raw tint, dense cores
+       lift toward white. Multiplying a dark tint down, as this did, made a
+       navy flavour read as an almost black rectangle. */
+    '  vec3 lit = mix(u_tint, vec3(1.0), 0.44);',
+    '  vec3 col = mix(u_tint * 0.55, lit, smoothstep(0.15, 0.95, d));',
     '  float g = hash(gl_FragCoord.xy + u_time) - 0.5;',
     '  col += g * 0.02;',
     '  gl_FragColor = vec4(col * d, d);',
@@ -139,11 +143,22 @@
     return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
   }
 
+  /* The five tints are nowhere near equal in luminance: a navy and a hot
+     pink at the same density give one plate a whisper and the next a flood.
+     Each flavour gets a gain normalised against its own brightest channel, so
+     all five read with the same weight and the range looks like one set. */
+  function normalise(rgb) {
+    var mx = Math.max(rgb[0], rgb[1], rgb[2]);
+    return 0.62 / (0.10 + mx);
+  }
+
   var items = targets.map(function (c) {
+    var tint = hexToRgb(c.getAttribute('data-smoke-tint'));
     return {
       canvas: c,
       ctx: c.getContext('2d'),
-      tint: hexToRgb(c.getAttribute('data-smoke-tint')),
+      tint: tint,
+      base: normalise(tint),
       gain: 1,
       px: 0, py: 0, tx: 0, ty: 0,
       visible: false,
@@ -169,7 +184,7 @@
     if (!it.canvas.width || !it.canvas.height) return;
     gl.uniform1f(uTime, now / 1000);
     gl.uniform3f(uTint, it.tint[0], it.tint[1], it.tint[2]);
-    gl.uniform1f(uGain, it.gain);
+    gl.uniform1f(uGain, it.gain * it.base);
     it.px += (it.tx - it.px) * 0.06;
     it.py += (it.ty - it.py) * 0.06;
     gl.uniform2f(uPtr, it.px, it.py);

@@ -218,13 +218,27 @@
    the cheapest premium signal there is, and the site had none.
    -------------------------------------------------------------------------- */
 
-.phead--index { background: var(--paper); border-bottom: 0; padding-block: var(--s7) var(--s8); }
-.phead--index .crumbs { grid-column: 1 / -1; margin-bottom: clamp(3.5rem, 8vh, 6rem); }
-.phead--index .phead__title { grid-column: 1 / span 9; margin-top: 0; font-family: var(--display); font-size: var(--t-title); font-weight: 700; text-transform: uppercase; line-height: .98; letter-spacing: -.01em; }
-.phead--index .phead__rule { grid-column: 1 / -1; position: relative; display: block; margin-top: var(--s6); height: 1px; background: var(--line); transform-origin: 0 50%; }
-.phead--index .phead__rule::before { content: ""; position: absolute; left: 0; top: 0; width: 48px; height: 1px; background: var(--copper); }
-.phead--index .phead__lede { grid-column: 1 / span 8; margin-top: var(--s5); font-size: 1.0625rem; color: var(--ink-2); max-width: 52ch; }
-@media (max-width: 900px) { .phead--index .phead__title, .phead--index .phead__lede { grid-column: 1 / -1; } }
+/* The first viewport used to be empty cream: a title, a rule and a lede
+   stranded in the left third with two thirds of the page dead, and roughly
+   600px of vertical space spent saying very little. The title and the
+   standfirst now sit side by side on a shared baseline, which uses the width
+   the page actually has and gets the first flavour above the fold. */
+
+.phead--index { background: var(--paper); border-bottom: 0; padding-block: var(--s6) var(--s7); }
+/* Rows are explicit. Left to auto placement the rule takes a row of its own
+   and pushes the standfirst underneath the title, which is the tall empty
+   layout this was meant to replace. */
+.phead--index .grid12, .phead--index.grid12 { row-gap: 0; }
+.phead--index .crumbs { grid-row: 1; grid-column: 1 / -1; margin-bottom: clamp(2rem, 4.5vh, 3.5rem); }
+.phead--index .phead__title { grid-row: 2; grid-column: 1 / span 7; margin-top: 0; font-family: var(--display); font-size: var(--t-title); font-weight: 700; text-transform: uppercase; line-height: .94; letter-spacing: -.022em; }
+.phead--index .phead__lede { grid-row: 2; grid-column: 8 / span 5; align-self: end; margin-top: 0; padding-bottom: .5em; font-size: 1.0625rem; color: var(--ink-2); max-width: 44ch; }
+.phead--index .phead__rule { grid-row: 3; grid-column: 1 / -1; position: relative; display: block; margin-top: var(--s5); height: 1px; background: var(--line); transform-origin: 0 50%; }
+.phead--index .phead__rule::before { content: ""; position: absolute; left: 0; top: 0; width: 96px; height: 2px; background: var(--copper); }
+
+@media (max-width: 900px) {
+  .phead--index .phead__title, .phead--index .phead__lede { grid-column: 1 / -1; }
+  .phead--index .phead__lede { margin-top: var(--s5); padding-bottom: 0; }
+}
 
 /* --------------------------------------------------------------------------
    THE BLACK FOOT
@@ -546,7 +560,7 @@ body::after {
 .plate::after {
   content: "";
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(90deg, rgba(6,6,8,.82) 0%, rgba(6,6,8,.55) 42%, rgba(6,6,8,.28) 72%, rgba(6,6,8,.5) 100%);
+  background: linear-gradient(90deg, rgba(6,6,8,.72) 0%, rgba(6,6,8,.46) 38%, rgba(6,6,8,.30) 66%, rgba(6,6,8,.52) 100%);
 }
 .plate > *:not(.plate__wash):not(.plate__smoke) { z-index: 2; }
 
@@ -563,18 +577,35 @@ body::after {
 .plate__cta { color: var(--paper); }
 .plate__rule { background: var(--copper-2); }
 
-/* The ghost numeral was clipping against the spec column and reading as a
-   rendering fault. On the dark ground it can sit properly inside the plate. */
+/* Composition.
+ *
+ * The three column grid was inherited from the old hairline row, where a
+ * narrow rail carried the number. On a dark plate that rail became 128px of
+ * nothing with a 10px chip floating alone in it, and the name started at an
+ * arbitrary 333px aligned to no edge at all. It looked like a bug because it
+ * was one.
+ *
+ * Two columns now. The number and chip sit directly above the name as a
+ * caption line, the name starts hard on the plate's own padding edge, and the
+ * spec column holds the right and sits on the same baseline as the name.
+ */
 @media (min-width: 900px) {
-  .plate::before {
-    right: auto; left: clamp(1.75rem, 3.4vw, 3rem); top: clamp(1.25rem, 2.4vw, 2rem); bottom: auto;
-    font-size: clamp(6rem, 11vw, 10rem);
-    color: var(--paper);
-    opacity: .07;
+  .plate {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    grid-template-areas:
+      "rail side"
+      "main side";
+    align-content: end;
+    row-gap: var(--s4);
   }
-  .plate:hover::before, .plate:focus-within::before { opacity: .12; transform: none; }
-  /* The rail number would double up with the ghost, so it steps aside. */
-  .plate__rail .ord { display: none; }
+  .plate__rail { grid-area: rail; }
+  .plate__main { grid-area: main; }
+  .plate__side { grid-area: side; align-self: end; }
+
+  /* The ghost figure was clipped by the plate edge and read as a rendering
+     fault. With the ordinal back in the rail it was saying the same thing
+     twice anyway, so it goes. */
+  .plate::before { content: none; }
 }
 
 /* The guide band is not a flavour, so it stays on paper: it is the one row in
@@ -679,3 +710,25 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .plate__smoke { transition: none; }
 }
+
+/* Type over live smoke.
+ *
+ * The smoke is generated and it drifts, so no fixed scrim can know where it
+ * will be bright. Three passes of shadow keep every string legible wherever
+ * the density lands, and let the scrim stay light enough that the artwork
+ * survives. Cheaper and more reliable than darkening half the plate.
+ */
+.plate__name,
+.plate__notes li,
+.plate__body,
+.plate__soon,
+.plate__cta,
+.plate__facts dt,
+.plate__facts dd,
+.plate .ord {
+  text-shadow: 0 1px 2px rgba(4,4,6,.55), 0 2px 14px rgba(4,4,6,.45), 0 0 42px rgba(4,4,6,.35);
+}
+.plate--guide .plate__name,
+.plate--guide .plate__body,
+.plate--guide .plate__cta,
+.plate--guide .ord { text-shadow: none; }
