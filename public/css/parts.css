@@ -322,3 +322,57 @@
 .brands--paper { background: var(--paper); border-block: 1px solid var(--line); }
 .brands--paper .brands__b { color: var(--ink-3); }
 .brands--paper .brands__b:hover { color: var(--copper-ink); }
+
+/* --------------------------------------------------------------------------
+   THE FOOTER
+
+   The markup and the stylesheet had drifted apart: rook.css styles .ftr__top,
+   .ftr__bottom and `.ftr h3`, but the markup emits .ftr__grid, .ftr__base and
+   `h2.ftr__h`. Nothing matched, so the footer was an unstyled stack of links
+   on every page on the site. This is the footer the markup actually renders.
+   -------------------------------------------------------------------------- */
+
+.ftr__grid { display: grid; gap: var(--s7); padding-bottom: var(--s7); }
+@media (min-width: 900px) { .ftr__grid { grid-template-columns: 1.7fr 1fr 1fr 1fr auto; gap: var(--s6); } }
+
+.ftr__h {
+  margin-bottom: var(--s4);
+  font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track); color: var(--paper);
+}
+.ftr__col ul { display: grid; gap: var(--s2); }
+.ftr__brand { max-width: 34ch; }
+
+.ftr__icons { display: flex; gap: var(--s3); }
+.ftr__icons a {
+  display: grid; place-items: center; width: 34px; height: 34px;
+  border: 1px solid rgba(255,255,255,.22); color: #B5A79B;
+  transition: border-color .25s var(--ease), color .25s var(--ease);
+}
+.ftr__icons a:hover { border-color: var(--copper); color: var(--copper-2); }
+
+.ftr__base {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: var(--s3) var(--s5);
+  padding-top: var(--s5); border-top: 1px solid var(--line-dark);
+}
+.ftr__legal { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); font-size: var(--t-micro); color: #857A70; }
+
+/* --------------------------------------------------------------------------
+   THE MOBILE MENU
+
+   Same drift: rook.css styles .menu__list, the markup emits .menu__in. The
+   panel opened to a column of unstyled links.
+   -------------------------------------------------------------------------- */
+
+.menu__in { display: grid; align-content: start; }
+.menu__in a {
+  display: block; padding-block: var(--s4); border-bottom: 1px solid var(--line);
+  font-family: var(--display); font-size: 1.125rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--track-2);
+}
+.menu__in a:hover { color: var(--copper-ink); }
+
+/* The product page cross-sell section closes the page on paper. */
+.pdp__also { padding-block: var(--bay); }
+.plinth__in { position: relative; z-index: 2; }
