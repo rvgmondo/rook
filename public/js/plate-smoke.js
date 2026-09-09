@@ -75,11 +75,11 @@
     /* Drifts in from the left, because the flavour name sits on that side and
        the smoke should gather behind it rather than fight the spec column. */
     '  float x    = gl_FragCoord.x / u_res.x;',
-    '  float lean = smoothstep(1.15, -0.15, x);',
-    '  float band = smoothstep(-0.20, 0.34, gl_FragCoord.y / u_res.y);',
+    '  float lean = smoothstep(1.55, -0.35, x);',
+    '  float band = smoothstep(-0.30, 0.30, gl_FragCoord.y / u_res.y);',
 
     '  float d = f * lean * band * u_gain;',
-    '  d = smoothstep(0.04, 0.55, d);',
+    '  d = smoothstep(0.02, 0.48, d);',
 
     /* Premultiplied against black: the plate ground is near black, so the
        smoke is the tint lifting out of it rather than a colour laid on top. */

@@ -77,7 +77,7 @@ export function productPage(slug, { gated } = {}) {
 
     <div class="pdp__plate" style="--f-tint:${esc(p.tint)};--f-cold:${cold};view-transition-name:rook-plate-${esc(p.slug)}">
       <span class="plate__wash" aria-hidden="true"></span>
-      ${smoke({ seed, tint: p.tint, opacity: 0.5 })}
+      <canvas class="plate__smoke" data-smoke-tint="${esc(p.tint)}" aria-hidden="true"></canvas>
       <div class="pdp__plate-in">
         <div class="plate__rail"><span class="ord">${ord(i + 1)}</span>${chip(p)}</div>
         <h1 class="pdp__name">${words(p.name)}</h1>
