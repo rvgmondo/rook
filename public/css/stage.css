@@ -165,7 +165,7 @@
   box-shadow: none;
 }
 @supports (backdrop-filter: blur(1px)) {
-  .hdr--over.is-stuck { background: rgba(10,10,10,.62); backdrop-filter: blur(14px) saturate(1.2); }
+  .hdr--over.is-stuck { background: rgba(10,10,10,.74); backdrop-filter: blur(16px) saturate(1.2); }
 }
 
 /* --------------------------------------------------------------------------
@@ -874,10 +874,14 @@
 .matrix tbody th a { color: var(--ink); }
 .matrix tbody tr:hover th a { color: var(--copper-ink); }
 
+/* Gold, not grey. Muted until hover looks tidy on a desktop mock and fails
+   in practice: it is the row's only call to action, it sits at 11px, and on a
+   touch screen there is no hover to reveal it. --ink-3 on paper is also the
+   weakest contrast on the page for the element asking to be clicked. */
 .matrix__cta {
   font-family: var(--display); font-size: var(--t-micro); font-weight: 600;
   text-transform: uppercase; letter-spacing: var(--track);
-  color: var(--ink-3); white-space: nowrap;
+  color: var(--copper-ink); white-space: nowrap;
 }
 .matrix tbody tr:hover .matrix__cta { color: var(--copper-ink); }
 
@@ -1061,4 +1065,22 @@
 
 @media (prefers-reduced-motion: reduce) {
   .rk-shown .rv { transition: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   SECTION STATEMENT
+
+   This class was given a measure and never a type treatment, so it rendered
+   as a bare h2: 22.5px sentence case, the only heading on the whole site not
+   set in the display face. It read as an unstyled leftover, because it was.
+   -------------------------------------------------------------------------- */
+
+.sect__statement {
+  font-family: var(--display);
+  font-size: var(--t-h2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  line-height: 1.15;
+  color: var(--ink);
 }

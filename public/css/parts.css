@@ -718,13 +718,16 @@ body::after {
  * the density lands, and let the scrim stay light enough that the artwork
  * survives. Cheaper and more reliable than darkening half the plate.
  */
-.plate__name,
-.plate__notes li,
-.plate__body,
-.plate__soon,
-.plate__cta,
-.plate__facts dt,
-.plate__facts dd,
+/* Scoped to the dark plate only. Unscoped, .plate__notes li also matched the
+   product page info column, which sits on paper - and a shadow tuned for
+   white type on smoke turns black type on cream into blurred embossing. */
+.plate .plate__name,
+.plate .plate__notes li,
+.plate .plate__body,
+.plate .plate__soon,
+.plate .plate__cta,
+.plate .plate__facts dt,
+.plate .plate__facts dd,
 .plate .ord {
   text-shadow: 0 1px 2px rgba(4,4,6,.55), 0 2px 14px rgba(4,4,6,.45), 0 0 42px rgba(4,4,6,.35);
 }
