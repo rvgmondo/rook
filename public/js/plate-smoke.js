@@ -49,6 +49,8 @@
     'uniform float u_time;',
     'uniform vec3  u_tint;',
     'uniform float u_gain;',
+    'uniform vec2  u_ptr;',
+    'uniform float u_par;',
 
     'float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }',
     'float noise(vec2 p){',
@@ -61,8 +63,11 @@
     'void main(){',
     '  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;',
     '  float t = u_time * 0.05;',
-    '  vec2 sp = uv;',
+    /* The pointer displaces the field rather than moving pixels, so it reads
+       as air being disturbed over the plate, not as a texture being dragged. */
+    '  vec2 sp = uv - u_ptr * 0.09;',
     '  sp.y -= t * 0.6;',
+    '  sp.y += u_par * 0.42;',
     '  sp *= 1.25;',
 
     /* Same two level domain warp as the hero, so the plates and the opener
@@ -116,6 +121,8 @@
   var uTime = gl.getUniformLocation(prog, 'u_time');
   var uTint = gl.getUniformLocation(prog, 'u_tint');
   var uGain = gl.getUniformLocation(prog, 'u_gain');
+  var uPtr  = gl.getUniformLocation(prog, 'u_ptr');
+  var uPar  = gl.getUniformLocation(prog, 'u_par');
 
   gl.viewport(0, 0, GW, GH);
   gl.uniform2f(uRes, GW, GH);
@@ -138,6 +145,7 @@
       ctx: c.getContext('2d'),
       tint: hexToRgb(c.getAttribute('data-smoke-tint')),
       gain: 1,
+      px: 0, py: 0, tx: 0, ty: 0,
       visible: false,
       sized: false,
     };
@@ -162,6 +170,13 @@
     gl.uniform1f(uTime, now / 1000);
     gl.uniform3f(uTint, it.tint[0], it.tint[1], it.tint[2]);
     gl.uniform1f(uGain, it.gain);
+    it.px += (it.tx - it.px) * 0.06;
+    it.py += (it.ty - it.py) * 0.06;
+    gl.uniform2f(uPtr, it.px, it.py);
+    var b = it.canvas.getBoundingClientRect();
+    var vh = window.innerHeight || 1;
+    var prog01 = (b.top + b.height / 2 - vh / 2) / (vh / 2 + b.height / 2);
+    gl.uniform1f(uPar, Math.max(-1.6, Math.min(1.6, prog01)));
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -225,8 +240,14 @@
   items.forEach(function (it) {
     var host = it.canvas.closest ? it.canvas.closest('.plate') : null;
     if (!host || reduced) return;
+    host.addEventListener('pointermove', function (e) {
+      var b = host.getBoundingClientRect();
+      it.tx = ((e.clientX - b.left) / b.width) * 2 - 1;
+      it.ty = ((e.clientY - b.top) / b.height) * 2 - 1;
+      play();
+    }, { passive: true });
     host.addEventListener('pointerenter', function () { it.gain = 1.5; play(); });
-    host.addEventListener('pointerleave', function () { it.gain = 1; play(); });
+    host.addEventListener('pointerleave', function () { it.gain = 1; it.tx = 0; it.ty = 0; play(); });
     host.addEventListener('focusin', function () { it.gain = 1.5; play(); });
     host.addEventListener('focusout', function () { it.gain = 1; play(); });
   });

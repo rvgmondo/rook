@@ -518,9 +518,12 @@ body::after {
   background: #0B0B0D;
   color: var(--paper);
   border-bottom: 0;
-  margin-block: clamp(1rem, 2vw, 1.75rem);
-  padding: clamp(1.75rem, 3.4vw, 3rem);
-  min-height: clamp(260px, 30vw, 360px);
+  margin-block: clamp(1.5rem, 3vw, 3rem);
+  padding: clamp(2rem, 4vw, 4rem);
+  /* A flavour owns the screen rather than occupying a row. At 300px these
+     read as a list with pictures; at three quarters of the viewport, moving
+     through the range feels like a sequence of scenes. */
+  min-height: clamp(420px, 74svh, 760px);
   align-items: end;
   overflow: hidden;
 }
@@ -606,6 +609,72 @@ body::after {
   background: linear-gradient(180deg, rgba(6,6,8,.1) 0%, rgba(6,6,8,0) 38%, rgba(6,6,8,.58) 100%);
 }
 .pdp__plate-in { position: relative; z-index: 2; }
+
+/* --------------------------------------------------------------------------
+   SCROLL TIMELINES NEED THIS
+
+   rook.css sets overflow-x:hidden on body to stop sideways scroll. That also
+   makes body a scroll container, and a view() timeline resolves against the
+   nearest scrollport ancestor - so every scroll-driven animation on the site
+   measured itself against a box that never scrolls while the document scrolled
+   somewhere else. They all froze at a fixed progress, silently: the transforms
+   were applied, they just never advanced. It looked like the animations had
+   simply not been written.
+
+   overflow-x:clip does the same clipping without creating a scroll container.
+   Guarded, because a browser without clip should keep the hidden it has.
+   -------------------------------------------------------------------------- */
+
+@supports (overflow: clip) {
+  body { overflow-x: clip; }
+}
+
+/* ==========================================================================
+   DEPTH AND CHOREOGRAPHY
+
+   The single reason this read as competent rather than costly: everything sat
+   on one plane and nothing responded to scroll. A page where the only motion
+   is a fade-in is a document. Depth is what money looks like.
+
+   All of it is scroll-driven CSS, so the browser runs it on the compositor
+   with no JavaScript, no scroll listener and no jank. Browsers without
+   animation-timeline get the finished, static composition, which is the
+   design we already had rather than a broken one.
+   ========================================================================== */
+
+/* The parallax is NOT done here.
+ *
+ * It was, with animation-timeline: view(), and it silently did nothing: the
+ * animations attached, reported playState "running", and their currentTime
+ * stayed null forever because body is a scroll container and the timeline
+ * never resolved against the scroller that actually moves. Every plate showed
+ * an identical frozen transform.
+ *
+ * Rather than keep fighting which element owns the scrollport, the drift now
+ * happens inside the shader in plate-smoke.js, driven by each plate's real
+ * position on screen. There is already a rAF loop running for the visible
+ * plates, so it costs one uniform and no DOM work at all - and being in the
+ * shader it moves the smoke itself rather than sliding a bitmap, which is the
+ * difference between depth and a moving texture.
+ *
+ * The plates carry .rv, so their entrance still comes from the observer in
+ * rook.js, which works.
+ */
+
+/* --- Scale and grid-breaking ----------------------------------------------
+
+   Perfect containment reads as a template. The name now runs to the optical
+   edge of the plate and overhangs its own padding slightly, which is the
+   difference between type placed in a box and type that owns the object. */
+
+.plate__name {
+  font-size: clamp(2.75rem, 7.2vw, 6.5rem);
+  line-height: .88;
+  letter-spacing: -.035em;
+}
+@media (min-width: 900px) {
+  .plate__name { margin-left: -.055em; }   /* optical, not metric, alignment */
+}
 
 @media (prefers-reduced-motion: reduce) {
   .plate__smoke { transition: none; }
