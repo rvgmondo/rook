@@ -24,7 +24,7 @@
 import { layout, esc, words, smoke, bottle } from '../render.js';
 import { icon } from '../lib/icons.js';
 import { meter, signupForm } from '../lib/components.js';
-import { products, bySlug, price } from '../data/products.js';
+import { products, bySlug, price, size } from '../data/products.js';
 import { productLd, breadcrumbLd } from '../lib/seo.js';
 
 // Two digits, zero padded. One numbering system for the whole site.
@@ -35,9 +35,9 @@ const ord = (n) => String(n).padStart(2, '0');
 const chip = (p) => `<span class="chip" style="--f-tint:${esc(p.tint)}" aria-hidden="true"></span>`;
 
 // The maker's stamp. Format is stated in a hairline drawing next to the size,
-// which says "60 ml bottle" without pretending to be a photograph of one.
+// which says "30 ml bottle" without pretending to be a photograph of one.
 const stamp = () =>
-  `<span class="stamp"><svg width="14" height="26" viewBox="0 0 14 26" fill="none" aria-hidden="true" focusable="false"><rect x="5" y="1" width="4" height="3" stroke="currentColor"/><path d="M4 6h6v18a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 4 24z" stroke="currentColor"/></svg>60 ML</span>`;
+  `<span class="stamp"><svg width="14" height="26" viewBox="0 0 14 26" fill="none" aria-hidden="true" focusable="false"><rect x="5" y="1" width="4" height="3" stroke="currentColor"/><path d="M4 6h6v18a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 4 24z" stroke="currentColor"/></svg>30 ML</span>`;
 
 // The dot leader spec row. The leader is what makes a spec table read as
 // engineered rather than administrative, and it is decorative, so it is hidden
@@ -99,23 +99,22 @@ export function productPage(slug, { gated } = {}) {
         ${meter('Intensity', p.meters.intensity)}
         ${meter('Sweetness', p.meters.sweetness)}
         ${meter('Cooling', p.meters.cooling)}
-        ${meter('Throat', p.meters.throat)}
+        ${meter('Sharpness', p.meters.sharpness)}
       </div>
 
       <h2 class="pdp__h">The plate</h2>
       <div class="lrows pdp__lrows">
         ${lrow('Price', `R ${price}`, 'Coming soon')}
-        ${lrow('Size', '60 ml')}
-        ${lrow('Strength', p.strength)}
-        ${lrow('Base', '50 / 50, for pods and MTL')}
+        ${lrow('Size', size)}
+        ${lrow('Supplied', 'Unmixed concentrate')}
       </div>
 
       <figure class="pdp__diagram">
         ${bottle(p.tint, p.name)}
-        <figcaption class="micro pdp__cap">Actual proportions. 60 ml.</figcaption>
+        <figcaption class="micro pdp__cap">Actual proportions. 30 ml.</figcaption>
       </figure>
 
-      <p class="micro pdp__ing">Propylene glycol, vegetable glycerine, nicotine salt and food grade flavouring. Our flavour formulations are our own and are not published.</p>
+      <p class="micro pdp__ing">Propylene glycol, vegetable glycerine and food grade flavouring. No nicotine. Our flavour formulations are our own and are not published.</p>
     </div>
 
   </div>

@@ -16,7 +16,7 @@ export function organizationLd() {
     name: 'ROOK',
     url: SITE + '/',
     logo: SITE + '/img/logo-fav.png',
-    description: 'A South African vape brand. Nicotine salt e-liquid, blended in Gauteng.',
+    description: 'A South African flavour house. Concentrated aroma, blended in Gauteng.',
     sameAs: ['https://www.instagram.com/rook.vapes', 'https://www.tiktok.com/@rook.vapes'],
     email: 'hello@rookvapes.co.za',
     areaServed: 'ZA',
@@ -56,7 +56,7 @@ export function productLd(p) {
     name: `ROOK ${p.name}`,
     description: p.short,
     brand: { '@type': 'Brand', name: 'ROOK' },
-    category: 'Nicotine salt e-liquid',
+    category: 'Flavour concentrate',
     offers: {
       '@type': 'Offer', priceCurrency: 'ZAR', price: String(price),
       availability: 'https://schema.org/PreOrder',

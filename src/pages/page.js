@@ -55,7 +55,7 @@ const METERS = [
   ['Intensity', 'intensity'],
   ['Sweetness', 'sweetness'],
   ['Cooling', 'cooling'],
-  ['Throat', 'throat'],
+  ['Sharpness', 'sharpness'],
 ];
 
 // Five flavours as five rows of a real table, scored one to five.

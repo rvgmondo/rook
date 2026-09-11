@@ -1,7 +1,7 @@
 import { layout, esc, words } from '../render.js';
 import { icon } from '../lib/icons.js';
 import { home, prelaunch, site } from '../data/copy.js';
-import { products, price } from '../data/products.js';
+import { products, price, size, launchSlugs } from '../data/products.js';
 import { organizationLd, websiteLd, faqLd } from '../lib/seo.js';
 
 // Pre-launch: the hero says "coming soon" and every action is "get notified".
@@ -23,7 +23,7 @@ const ord = (n) => String(n).padStart(2, '0');
 
 // The maker's stamp. Format is stated, never photographed.
 const stamp = () =>
-  `<span class="stamp"><svg width="14" height="26" viewBox="0 0 14 26" fill="none" aria-hidden="true" focusable="false"><rect x="5" y="1" width="4" height="3" stroke="currentColor"/><path d="M4 6h6v18a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 4 24z" stroke="currentColor"/></svg>60 ML</span>`;
+  `<span class="stamp"><svg width="14" height="26" viewBox="0 0 14 26" fill="none" aria-hidden="true" focusable="false"><rect x="5" y="1" width="4" height="3" stroke="currentColor"/><path d="M4 6h6v18a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 4 24z" stroke="currentColor"/></svg>30 ML</span>`;
 
 // A spec row inside a band. Key left, value right, hairline under.
 const fact = (k, v) => `<div class="fact"><dt>${esc(k)}</dt><dd>${v}</dd></div>`;
@@ -43,7 +43,7 @@ function plate(p, i, { as = 'h3' } = {}) {
   const notes = p.notes.map((n) => `<li>${esc(n)}</li>`).join('');
   const facts = [
     fact('Family', esc(p.family)),
-    fact('Strength', esc(p.strength.replace(' nicotine salt', ''))),
+    fact('Size', esc(size)),
     fact('Format', stamp()),
     fact('Price', `R ${price}`),
   ].join('');
@@ -59,7 +59,7 @@ function plate(p, i, { as = 'h3' } = {}) {
     </div>
     <div class="plate__side">
       <dl class="plate__facts">${facts}</dl>
-      <p class="plate__soon">Coming soon</p>
+      <p class="plate__soon">${launchSlugs.includes(p.slug) ? 'In the first run' : 'Follows later'}</p>
       <span class="plate__cta">Get notified <span class="arrow">${icon('arrow', 14)}</span></span>
     </div>
   </article>`;

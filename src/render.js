@@ -47,7 +47,7 @@ export function smoke({ seed = 7, tint = '#C9976A', opacity = 1, cls = '' } = {}
   </div>`;
 }
 
-// --- A single 60 ml bottle, tinted to the flavour ----------------------------
+// --- A single 30 ml bottle, tinted to the flavour ----------------------------
 export function bottle(tint = '#B8985A', name = '') {
   return `<svg class="bottle" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(name)} bottle">
     <rect x="49" y="6" width="22" height="20" rx="3" fill="#141414"/>
@@ -57,7 +57,7 @@ export function bottle(tint = '#B8985A', name = '') {
     <rect x="34" y="110" width="52" height="60" rx="2" fill="#ffffff" opacity="0.94"/>
     <text x="60" y="132" text-anchor="middle" font-family="Raleway, sans-serif" font-size="7" letter-spacing="1.5" fill="#0A0A0A">ROOK</text>
     <text x="60" y="146" text-anchor="middle" font-family="Raleway, sans-serif" font-size="8" font-weight="700" letter-spacing="0.5" fill="#0A0A0A">${esc(name).toUpperCase()}</text>
-    <text x="60" y="160" text-anchor="middle" font-family="Raleway, sans-serif" font-size="5.5" letter-spacing="1" fill="#6E6960">60 ML</text>
+    <text x="60" y="160" text-anchor="middle" font-family="Raleway, sans-serif" font-size="5.5" letter-spacing="1" fill="#6E6960">30 ML</text>
     <rect x="36" y="44" width="6" height="120" rx="3" fill="#ffffff" opacity="0.5"/>
   </svg>`;
 }
@@ -94,7 +94,7 @@ function footer() {
       <div class="ftr__col ftr__social"><h2 class="ftr__h">Follow</h2><div class="ftr__icons"><a href="${site.instagram}" rel="noopener nofollow" aria-label="Instagram">${icon('instagram', 16)}</a><a href="${site.tiktok}" rel="noopener nofollow" aria-label="TikTok">${icon('tiktok', 16)}</a></div></div>
     </div>
     <div class="wrap ftr__base">
-      <p class="ftr__warn">Contains nicotine. Nicotine is an addictive substance. Not for anyone under 18, non-smokers, or anyone pregnant or breastfeeding.</p>
+      <p class="ftr__warn">Concentrated flavouring, sold unmixed and not ready to use as supplied. Contains no nicotine. Keep out of reach of children. Sold to adults 18 or older only.</p>
       <div class="ftr__legal"><p>&copy; ${new Date().getFullYear()} ROOK. Gauteng, South Africa.</p><p>Adults 18+ only. We verify age at checkout.</p></div>
     </div>
   </footer>`;
@@ -113,7 +113,7 @@ export function ageGate(error = '') {
     <div class="gate__in">
       <span class="logo gate__logo">${mark('logo__mark')}<span class="logo__type"><span class="logo__word">ROOK</span> <span class="logo__tag">made in South Africa</span></span></span>
       <h1 class="gate__title" id="gate-title" aria-label="This site is for adults.">${words('This site is for adults.')}</h1>
-      <p class="gate__copy">ROOK sells nicotine products. Enter your date of birth to continue. We keep the answer, not the date.</p>
+      <p class="gate__copy">ROOK sells concentrated flavourings for adults. Enter your date of birth to continue. We keep the answer, not the date.</p>
       <form class="gate__form" method="post" action="/gate">
         <div class="gate__dob">
           ${field('Day', 'd', 'gate-d', 2, '00')}
@@ -123,7 +123,7 @@ export function ageGate(error = '') {
         <p class="notice notice--error" id="gate-error"${msg ? '' : ' hidden'}>${esc(msg)}</p>
         <button class="btn btn--block" type="submit">Enter</button>
       </form>
-      <p class="gate__legal">By entering you confirm you are 18 or older and a current nicotine user. Nicotine is an addictive substance. Not for use by non-smokers, people under 18, or anyone who is pregnant or breastfeeding. <a href="/age-policy/">Age policy</a> and <a href="/privacy/">privacy</a>.</p>
+      <p class="gate__legal">By entering you confirm you are 18 or older. ROOK sells concentrated flavouring that is not ready to use as supplied and contains no nicotine. Keep out of reach of children. <a href="/age-policy/">Age policy</a> and <a href="/privacy/">privacy</a>.</p>
     </div>
   </div>`;
 }
