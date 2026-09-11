@@ -1,5 +1,9 @@
 node_modules/
-data/
+# ANCHORED. Unanchored 'data/' matches a directory called data at ANY depth,
+# which silently excluded src/data/ - the entire content layer of the site.
+# Every word of copy went untracked for weeks, and a deploy that shipped a
+# tracked page importing from an untracked data file took the site down.
+/data/
 .env
 *.log
 
